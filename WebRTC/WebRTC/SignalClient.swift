@@ -26,9 +26,13 @@ struct Message: Codable {
 
 class SignalClient {
     
-    private let socket = WebSocket(url: URL(string: "ws://signal.stasel.com:8080/")!)
+    private let serverUrl = "ws://192.168.1.252:8080"
+    private let socket: WebSocket
     weak var delegate: SignalClientDelegate?
     
+    init() {
+        self.socket = WebSocket(url: URL(string: self.serverUrl)!)
+    }
     func connect() {
         self.socket.delegate = self
         self.socket.connect()
@@ -60,6 +64,12 @@ extension SignalClient: WebSocketDelegate {
     
     func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
         self.delegate?.signalClientDidDisconnect(self)
+        
+        // try to reconnect every two seconds
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+            print("Trying to reconnect to signaling server...")
+            self.socket.connect()
+        }
     }
     
     func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {

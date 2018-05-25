@@ -49,7 +49,6 @@ class WebRTCClient: NSObject {
             }
             
             self.peerConnection.setLocalDescription(sdp, completionHandler: { (error) in
-               // self.delegate?.webRTCClient(self, didReceiveLocalSdp: sdp)
                 completion(sdp)
             })
         }

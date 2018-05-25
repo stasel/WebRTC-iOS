@@ -23,7 +23,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AOt-yj-kPb">
-                    <rect key="frame" x="281.5" y="500.5" width="93.5" height="166.5"/>
+                    <rect key="frame" x="231.5" y="480.5" width="123.5" height="166.5"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N0c-WK-c8E">
@@ -37,11 +37,11 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="AOt-yj-kPb" firstAttribute="bottom" secondItem="pxm-TL-5nk" secondAttribute="bottom" id="0O4-We-mfb"/>
+                <constraint firstItem="AOt-yj-kPb" firstAttribute="bottom" secondItem="pxm-TL-5nk" secondAttribute="bottom" constant="-20" id="0O4-We-mfb"/>
                 <constraint firstItem="AOt-yj-kPb" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.25" id="8At-M9-fOW"/>
-                <constraint firstItem="AOt-yj-kPb" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.25" id="Q79-fx-RRs"/>
+                <constraint firstItem="AOt-yj-kPb" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.33" id="Q79-fx-RRs"/>
                 <constraint firstItem="N0c-WK-c8E" firstAttribute="leading" secondItem="pxm-TL-5nk" secondAttribute="leading" constant="20" id="Tx3-j5-jF0"/>
-                <constraint firstItem="AOt-yj-kPb" firstAttribute="trailing" secondItem="pxm-TL-5nk" secondAttribute="trailing" id="f7S-eS-CKC"/>
+                <constraint firstItem="AOt-yj-kPb" firstAttribute="trailing" secondItem="pxm-TL-5nk" secondAttribute="trailing" constant="-20" id="f7S-eS-CKC"/>
                 <constraint firstItem="N0c-WK-c8E" firstAttribute="top" secondItem="pxm-TL-5nk" secondAttribute="top" constant="20" id="fl5-Da-jpW"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="pxm-TL-5nk"/>
