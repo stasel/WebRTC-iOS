@@ -27,9 +27,9 @@ class VideoViewController: UIViewController {
         #if arch(arm64)
             // Using metal (arm64 only)
             let localRenderer = RTCMTLVideoView(frame: self.localVideoView.frame)
-            localRenderer.setVideoContentMode(.scaleAspectFill)
+            localRenderer.videoContentMode = .scaleAspectFill
             let remoteRenderer = RTCMTLVideoView(frame: self.view.frame)
-            localRenderer.setVideoContentMode(.scaleAspectFill)
+            remoteRenderer.videoContentMode = .scaleAspectFill
 
         #else
             // Using OpenGLES for the rest
