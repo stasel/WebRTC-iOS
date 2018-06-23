@@ -11,7 +11,8 @@ import UIKit
 class VideoViewController: UIViewController {
 
     @IBOutlet weak var localVideoView: UIView!
-    let webRTCClient: WebRTCClient
+    private let webRTCClient: WebRTCClient
+    
     init(webRTCClient: WebRTCClient) {
         self.webRTCClient = webRTCClient
         super.init(nibName: String(describing: VideoViewController.self), bundle: Bundle.main)
@@ -38,7 +39,7 @@ class VideoViewController: UIViewController {
         #endif
 
         
-        self.webRTCClient.startCapureLocalVideo(renderer: localRenderer)
+        self.webRTCClient.startCaptureLocalVideo(renderer: localRenderer)
         self.webRTCClient.renderRemoteVideo(to: remoteRenderer)
         
         self.embedView(localRenderer, into: self.localVideoView)

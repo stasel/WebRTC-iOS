@@ -2,7 +2,7 @@
 A simple native WebRTC demo iOS app using swift 
 
 ## Requirments
-1. Xcode 9.3 or newer
+1. Xcode 9.4 or newer
 2. Cocoapods
 3. Node.js + npm
 
@@ -30,3 +30,4 @@ A simple native WebRTC demo iOS app using swift
 * WebRTC iOS compile guide: https://webrtc.org/native-code/ios/
 * appear.in dev blog post: https://github.com/appearin/tech.appear.in/blob/master/source/_posts/Getting-started-with-WebRTC-on-iOS.md (it uses old WebRTC api but still very informative)
 * AppRTC - a more detailed app to demonstrate WebRTC: https://github.com/ISBX/apprtc-ios
+* Useful information from pexip: https://pexip.github.io/pexkit-sdk/ios_media

@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		79177C9720B0DE7A00BCD399 /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177C9620B0DE7A00BCD399 /* WebRTCClient.swift */; };
 		79177C9920B0DF2700BCD399 /* SignalClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177C9820B0DF2700BCD399 /* SignalClient.swift */; };
-		79177CA120B16FC000BCD399 /* CodableRTCIceCandidate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177CA020B16FC000BCD399 /* CodableRTCIceCandidate.swift */; };
-		79177CA320B17A9C00BCD399 /* CodableRTCSessionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177CA220B17A9C00BCD399 /* CodableRTCSessionDescription.swift */; };
+		79177CA120B16FC000BCD399 /* RTCIceCandidate+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177CA020B16FC000BCD399 /* RTCIceCandidate+JSON.swift */; };
+		79177CA320B17A9C00BCD399 /* RTCSessionDescription+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177CA220B17A9C00BCD399 /* RTCSessionDescription+JSON.swift */; };
 		79177CA620B1F76E00BCD399 /* RTCStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177CA520B1F76E00BCD399 /* RTCStates.swift */; };
 		79177CA820B2276400BCD399 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177CA720B2276400BCD399 /* VideoViewController.swift */; };
 		79177CAA20B2283F00BCD399 /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79177CA920B2283F00BCD399 /* VideoViewController.xib */; };
@@ -26,8 +26,8 @@
 		79177C9620B0DE7A00BCD399 /* WebRTCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCClient.swift; sourceTree = "<group>"; };
 		79177C9820B0DF2700BCD399 /* SignalClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalClient.swift; sourceTree = "<group>"; };
 		79177C9C20B0E88B00BCD399 /* WebRTC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WebRTC-Bridging-Header.h"; sourceTree = "<group>"; };
-		79177CA020B16FC000BCD399 /* CodableRTCIceCandidate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableRTCIceCandidate.swift; sourceTree = "<group>"; };
-		79177CA220B17A9C00BCD399 /* CodableRTCSessionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableRTCSessionDescription.swift; sourceTree = "<group>"; };
+		79177CA020B16FC000BCD399 /* RTCIceCandidate+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RTCIceCandidate+JSON.swift"; sourceTree = "<group>"; };
+		79177CA220B17A9C00BCD399 /* RTCSessionDescription+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RTCSessionDescription+JSON.swift"; sourceTree = "<group>"; };
 		79177CA520B1F76E00BCD399 /* RTCStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCStates.swift; sourceTree = "<group>"; };
 		79177CA720B2276400BCD399 /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		79177CA920B2283F00BCD399 /* VideoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
@@ -85,8 +85,8 @@
 		79177CA420B1C39700BCD399 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				79177CA020B16FC000BCD399 /* CodableRTCIceCandidate.swift */,
-				79177CA220B17A9C00BCD399 /* CodableRTCSessionDescription.swift */,
+				79177CA020B16FC000BCD399 /* RTCIceCandidate+JSON.swift */,
+				79177CA220B17A9C00BCD399 /* RTCSessionDescription+JSON.swift */,
 				79177CA520B1F76E00BCD399 /* RTCStates.swift */,
 			);
 			path = Extensions;
@@ -249,12 +249,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79177CA320B17A9C00BCD399 /* CodableRTCSessionDescription.swift in Sources */,
+				79177CA320B17A9C00BCD399 /* RTCSessionDescription+JSON.swift in Sources */,
 				79262EE920B0D6F600D576C1 /* ViewController.swift in Sources */,
 				79177CA820B2276400BCD399 /* VideoViewController.swift in Sources */,
 				79262EE720B0D6F600D576C1 /* AppDelegate.swift in Sources */,
 				79177CA620B1F76E00BCD399 /* RTCStates.swift in Sources */,
-				79177CA120B16FC000BCD399 /* CodableRTCIceCandidate.swift in Sources */,
+				79177CA120B16FC000BCD399 /* RTCIceCandidate+JSON.swift in Sources */,
 				79177C9920B0DF2700BCD399 /* SignalClient.swift in Sources */,
 				79177C9720B0DE7A00BCD399 /* WebRTCClient.swift in Sources */,
 			);

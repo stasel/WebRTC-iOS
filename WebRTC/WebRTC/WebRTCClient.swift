@@ -23,6 +23,7 @@ class WebRTCClient: NSObject {
     
     private var videoCapturer: RTCVideoCapturer?
     private var remoteStream: RTCMediaStream?
+    private var localVideoTrack: RTCVideoTrack?
     
     override init() {
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
@@ -32,7 +33,15 @@ class WebRTCClient: NSObject {
         let constraints = RTCMediaConstraints(mandatoryConstraints: nil,
                                               optionalConstraints: ["DtlsSrtpKeyAgreement":kRTCMediaConstraintsValueTrue])
         let config = RTCConfiguration()
+        
+        // We use Google's public stun/turn server. For production apps you should deploy your own stun/turn servers.
         config.iceServers = [RTCIceServer(urlStrings: ["stun:stun.l.google.com:19302"])]
+        
+        // Unified plan is more superior than planB
+        config.sdpSemantics = .unifiedPlan
+        
+        // gatherContinually will let WebRTC to listen to any network changes and send any new candidates to the other client
+        config.continualGatheringPolicy = .gatherContinually
         self.peerConnection = self.factory.peerConnection(with: config, constraints: constraints, delegate: nil)
         
         super.init()
@@ -76,9 +85,8 @@ class WebRTCClient: NSObject {
         self.peerConnection.add(remoteCandidate)
     }
     
-    func startCapureLocalVideo(renderer: RTCVideoRenderer) {
-        guard let stream = self.peerConnection.localStreams.first ,
-            let capturer = self.videoCapturer as? RTCCameraVideoCapturer else {
+    func startCaptureLocalVideo(renderer: RTCVideoRenderer) {
+        guard let capturer = self.videoCapturer as? RTCCameraVideoCapturer else {
             return
         }
 
@@ -96,13 +104,12 @@ class WebRTCClient: NSObject {
             let fps = (format.videoSupportedFrameRateRanges.sorted { return $0.maxFrameRate < $1.maxFrameRate }.last) else {
             return
         }
-        
+
         capturer.startCapture(with: frontCamera,
                               format: format,
                               fps: Int(fps.maxFrameRate))
         
-
-        stream.videoTracks.first?.add(renderer)
+        self.localVideoTrack?.add(renderer)
     }
     
     func renderRemoteVideo(to renderer: RTCVideoRenderer) {
@@ -118,17 +125,21 @@ class WebRTCClient: NSObject {
     }
     
     private func createMediaSenders() {
-        
-        let streamId = "stream"
-        let stream = self.factory.mediaStream(withStreamId: streamId)
-
-        // Audio
+        let audioTrack = self.createAudioTrack()
+        let videoTrack = self.createVideoTrack()
+        self.peerConnection.add(audioTrack, streamIds: ["stream0"])
+        self.peerConnection.add(videoTrack, streamIds: ["stream0"])
+        self.localVideoTrack = videoTrack
+    }
+    
+    private func createAudioTrack() -> RTCAudioTrack {
         let audioConstrains = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
         let audioSource = self.factory.audioSource(with: audioConstrains)
         let audioTrack = self.factory.audioTrack(with: audioSource, trackId: "audio0")
-        stream.addAudioTrack(audioTrack)
-        
-        // Video
+        return audioTrack
+    }
+    
+    private func createVideoTrack() -> RTCVideoTrack {
         let videoSource = self.factory.videoSource()
         if TARGET_OS_SIMULATOR != 0 {
             self.videoCapturer = RTCFileVideoCapturer(delegate: videoSource)
@@ -137,18 +148,12 @@ class WebRTCClient: NSObject {
             self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
         }
         let videoTrack = self.factory.videoTrack(with: videoSource, trackId: "video0")
-        stream.addVideoTrack(videoTrack)
-        
-        // Add our stream to the WebRTC client
-        self.peerConnection.add(stream)
+        return videoTrack
     }
     
     private func setAudioEnabled(_ isEnabled: Bool) {
-        self.peerConnection.localStreams.forEach { (stream) in
-            stream.audioTracks.forEach({ (audioTrack) in
-                audioTrack.isEnabled = isEnabled
-            })
-        }
+        let audioTracks = self.peerConnection.senders.compactMap { return $0.track as? RTCAudioTrack }
+        audioTracks.forEach { $0.isEnabled = isEnabled }
     }
 }
 
