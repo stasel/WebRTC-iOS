@@ -73,17 +73,19 @@ extension SignalClient: WebSocketDelegate {
     }
     
     func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
-        if let data = text.data(using: .utf8),
-            let message = try? JSONDecoder().decode(Message.self, from: data) {
-            switch message.type {
-            case .candidate:
-                if let candidate = RTCIceCandidate.fromJsonString(message.payload) {
-                    self.delegate?.signalClient(self, didReceiveCandidate: candidate)
-                }
-            case .sdp:
-                if let sdp = RTCSessionDescription.fromJsonString(message.payload) {
-                    self.delegate?.signalClient(self, didReceiveRemoteSdp: sdp)
-                }
+        guard let data = text.data(using: .utf8),
+              let message = try? JSONDecoder().decode(Message.self, from: data) else {
+                return
+        }
+        
+        switch message.type {
+        case .candidate:
+            if let candidate = RTCIceCandidate.fromJsonString(message.payload) {
+                self.delegate?.signalClient(self, didReceiveCandidate: candidate)
+            }
+        case .sdp:
+            if let sdp = RTCSessionDescription.fromJsonString(message.payload) {
+                self.delegate?.signalClient(self, didReceiveRemoteSdp: sdp)
             }
         }
     }

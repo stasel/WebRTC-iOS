@@ -11,7 +11,6 @@ import Foundation
 extension RTCIceConnectionState: CustomStringConvertible {
     public var description: String {
         switch self {
-            
         case .new:          return "new"
         case .checking:     return "checking"
         case .connected:    return "connected"
@@ -27,7 +26,6 @@ extension RTCIceConnectionState: CustomStringConvertible {
 extension RTCSignalingState: CustomStringConvertible {
     public var description: String {
         switch self {
-            
         case .stable:               return "stable"
         case .haveLocalOffer:       return "haveLocalOffer"
         case .haveLocalPrAnswer:    return "haveLocalPrAnswer"
@@ -41,7 +39,6 @@ extension RTCSignalingState: CustomStringConvertible {
 extension RTCIceGatheringState: CustomStringConvertible {
     public var description: String {
         switch self {
-            
         case .new:          return "new"
         case .gathering:    return "gathering"
         case .complete:     return "complete"
