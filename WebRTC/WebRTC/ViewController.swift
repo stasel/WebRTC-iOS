@@ -115,7 +115,7 @@ class ViewController: UIViewController {
     @IBAction func speakerDidTouch(_ sender: UIButton) {
         let session = AVAudioSession.sharedInstance()
         do {
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try session.setCategory(AVAudioSession.Category.playAndRecord, mode: .videoChat, options: [])
             
             if self.speakerOn {
                 try session.overrideOutputAudioPort(.none)

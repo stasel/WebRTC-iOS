@@ -44,7 +44,7 @@ class VideoViewController: UIViewController {
         
         self.embedView(localRenderer, into: self.localVideoView)
         self.embedView(remoteRenderer, into: self.view)
-        self.view.sendSubview(toBack: remoteRenderer)
+        self.view.sendSubviewToBack(remoteRenderer)
     }
     
     func embedView(_ view: UIView, into containerView: UIView) {
