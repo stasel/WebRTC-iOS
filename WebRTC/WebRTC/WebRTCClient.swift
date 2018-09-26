@@ -10,6 +10,8 @@ import Foundation
 
 protocol WebRTCClientDelegate: class {
     func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)
+    func webRTCClient(_ client: WebRTCClient, didReciveDataChannelMessage message: String)
+    func webRTCClient(_ client: WebRTCClient, didReciveDataChannelMessage message: Data)
 }
 
 class WebRTCClient: NSObject {
@@ -24,6 +26,7 @@ class WebRTCClient: NSObject {
     private var videoCapturer: RTCVideoCapturer?
     private var remoteStream: RTCMediaStream?
     private var localVideoTrack: RTCVideoTrack?
+    private var dataChannels = [RTCDataChannel]()
     
     override init() {
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
@@ -124,12 +127,37 @@ class WebRTCClient: NSObject {
         self.setAudioEnabled(true)
     }
     
+    func sendMessage(forLabel label:String = "ExampleDataChannel", message: String) {
+        let data = message.data(using: .utf8)
+        self.sendMessage(forLabel: label, message: data!, isBinary: false)
+    }
+    
+    func sendMessage(forLabel label:String = "ExampleDataChannel", message: Data, isBinary: Bool = true) {
+        for dataChannel in dataChannels {
+            if dataChannel.label == label {
+                let buffer = RTCDataBuffer(data: message, isBinary: isBinary)
+                dataChannel.sendData(buffer)
+            }
+        }
+    }
+    
     private func createMediaSenders() {
         let audioTrack = self.createAudioTrack()
         let videoTrack = self.createVideoTrack()
         self.peerConnection.add(audioTrack, streamIds: ["stream0"])
         self.peerConnection.add(videoTrack, streamIds: ["stream0"])
         self.localVideoTrack = videoTrack
+    }
+    
+    func createDataChannel(forLabel label:String = "ExampleDataChannel") -> RTCDataChannel? {
+        let dataChannelConfiguration = RTCDataChannelConfiguration()
+        if let dataChannel = self.peerConnection.dataChannel(forLabel: label, configuration: dataChannelConfiguration) {
+            dataChannel.delegate = self
+            dataChannels.append(dataChannel)
+            return dataChannel
+        } else {
+            return nil
+        }
     }
     
     private func createAudioTrack() -> RTCAudioTrack {
@@ -141,12 +169,11 @@ class WebRTCClient: NSObject {
     
     private func createVideoTrack() -> RTCVideoTrack {
         let videoSource = self.factory.videoSource()
-        if TARGET_OS_SIMULATOR != 0 {
+        #if TARGET_OS_SIMULATOR
             self.videoCapturer = RTCFileVideoCapturer(delegate: videoSource)
-        }
-        else {
+        #else
             self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
-        }
+        #endif
         let videoTrack = self.factory.videoTrack(with: videoSource, trackId: "video0")
         return videoTrack
     }
@@ -195,5 +222,41 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         print("peerConnection did open data channel")
+        dataChannel.delegate = self
+        self.dataChannels.append(dataChannel)
     }
+}
+
+extension WebRTCClient: RTCDataChannelDelegate {
+    
+    func dataChannelDidChangeState(_ dataChannel: RTCDataChannel) {
+        switch dataChannel.readyState {
+        case .open:
+            print("open datachannel")
+            break
+        case .connecting:
+            print("connecting datachannel")
+            break
+        case .closing:
+            print("closing datachannel")
+            break
+        case .closed:
+            print("closed datachannel")
+            break
+        }
+    }
+    
+    func dataChannel(_ dataChannel: RTCDataChannel, didReceiveMessageWith buffer: RTCDataBuffer) {
+        if buffer.isBinary {
+            delegate?.webRTCClient(self, didReciveDataChannelMessage: buffer.data)
+        } else {
+            if let msg = String(data: buffer.data, encoding: .utf8) {
+                delegate?.webRTCClient(self, didReciveDataChannelMessage: msg)
+            }
+        }
+    }
+    
+    func dataChannel(_ dataChannel: RTCDataChannel, didChangeBufferedAmount amount: UInt64) {
+        print("didChangeBufferedAmount",amount)
+    } 
 }
