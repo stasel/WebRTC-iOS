@@ -21,6 +21,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var remoteSdpStatusLabel: UILabel!
     @IBOutlet weak var remoteCandidatesLabel: UILabel!
     @IBOutlet weak var muteButton: UIButton!
+    @IBOutlet weak var dataChannelLableField: UITextField!
+    @IBOutlet weak var messageBody: UITextField!
     
     var signalingConnected: Bool = false {
         didSet {
@@ -145,7 +147,40 @@ class ViewController: UIViewController {
         else {
             self.webRTCClient.unmuteAudio()
         }
-    }    
+    }
+    
+      
+    @IBAction func createDataChannelTap(_ sender: Any) {
+        showAlert("abc")
+        return
+        guard let label = self.dataChannelLableField.text else {
+            print("datachannel label empty")
+            return
+        }
+        
+        if let _ = self.webRTCClient.createDataChannel(forLabel: label) {
+            print("datachennel created")
+            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                self.webRTCClient.sendMessage(forLabel: label, message: "test message")
+            }
+        }
+        
+    }
+    
+    @IBAction func sendMessageTap(_ sender: Any) {
+        guard let label = self.dataChannelLableField.text else {
+            print("datachannel label empty")
+            return
+        }
+        self.webRTCClient.sendMessage(forLabel: label, message: "test message")
+    }
+    
+    func showAlert(_ message:String) {
+        let alert = UIAlertController(title: "From RTCDataChannel", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 extension ViewController: SignalClientDelegate {
@@ -179,5 +214,16 @@ extension ViewController: WebRTCClientDelegate {
         self.signalClient.send(candidate: candidate)
 
     }
+    
+    func webRTCClient(_ client: WebRTCClient, didReciveDataChannelMessage message: String) {
+        print("message recived!",message)
+        self.showAlert(message)
+    }
+    
+    func webRTCClient(_ client: WebRTCClient, didReciveDataChannelMessage message: Data) {
+        print("binnary message recived!")
+        self.showAlert("binnary message recived!")
+    }
+    
 }
 
