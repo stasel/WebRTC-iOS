@@ -31,7 +31,6 @@ class VideoViewController: UIViewController {
             localRenderer.videoContentMode = .scaleAspectFill
             let remoteRenderer = RTCMTLVideoView(frame: self.view.frame)
             remoteRenderer.videoContentMode = .scaleAspectFill
-
         #else
             // Using OpenGLES for the rest
             let localRenderer = RTCEAGLVideoView(frame: self.localVideoView.frame)

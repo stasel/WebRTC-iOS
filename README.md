@@ -1,6 +1,8 @@
 # WebRTC-iOS
 A simple native WebRTC demo iOS app using swift. 
 
+![Screenshots](images/WebRTC.png)
+
 ## Disclaimer
 This demo app's purpose is to demonstrate the bare minimum required to establish peer to peer connection with WebRTC. **This is not a production ready code!** In order to have a production VoIP app you will need to have a real signaling server (not a simple broadcast server like in this example), deploy your own Turn server(s) and probably integrate CallKit and push notifications.
  
