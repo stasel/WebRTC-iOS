@@ -11,8 +11,8 @@ import AVFoundation
 
 class MainViewController: UIViewController {
 
-    private let signalClient = SignalClient()
-    private let webRTCClient = WebRTCClient()
+    private let signalClient: SignalClient
+    private let webRTCClient: WebRTCClient
     
     @IBOutlet private weak var speakerButton: UIButton?
     @IBOutlet private weak var signalingStatusLabel: UILabel?
@@ -83,7 +83,9 @@ class MainViewController: UIViewController {
         }
     }
     
-    init() {
+    init(signalClient: SignalClient, webRTCClient: WebRTCClient) {
+        self.signalClient = signalClient
+        self.webRTCClient = webRTCClient
         super.init(nibName: String(describing: MainViewController.self), bundle: Bundle.main)
     }
     
