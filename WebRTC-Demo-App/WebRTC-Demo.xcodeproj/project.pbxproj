@@ -15,10 +15,10 @@
 		79177CA820B2276400BCD399 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177CA720B2276400BCD399 /* VideoViewController.swift */; };
 		79177CAA20B2283F00BCD399 /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79177CA920B2283F00BCD399 /* VideoViewController.xib */; };
 		79262EE720B0D6F600D576C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79262EE620B0D6F600D576C1 /* AppDelegate.swift */; };
-		79262EE920B0D6F600D576C1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79262EE820B0D6F600D576C1 /* ViewController.swift */; };
-		79262EEC20B0D6F600D576C1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 79262EEA20B0D6F600D576C1 /* Main.storyboard */; };
+		79262EE920B0D6F600D576C1 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79262EE820B0D6F600D576C1 /* MainViewController.swift */; };
 		79262EEE20B0D6F800D576C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79262EED20B0D6F800D576C1 /* Assets.xcassets */; };
-		79262EF120B0D6F800D576C1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 79262EEF20B0D6F800D576C1 /* LaunchScreen.storyboard */; };
+		798FBA472200F681009F525E /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 798FBA462200F681009F525E /* MainViewController.xib */; };
+		798FBA492200F9A9009F525E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 798FBA482200F9A9009F525E /* LaunchScreen.storyboard */; };
 		A3736211ED520122E5DBF999 /* libPods-WebRTC-Demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F59EEC794858CDDF75D2F2 /* libPods-WebRTC-Demo.a */; };
 /* End PBXBuildFile section */
 
@@ -36,11 +36,11 @@
 		79177CA920B2283F00BCD399 /* VideoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
 		79262EE320B0D6F600D576C1 /* WebRTC-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WebRTC-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		79262EE620B0D6F600D576C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		79262EE820B0D6F600D576C1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		79262EEB20B0D6F600D576C1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		79262EE820B0D6F600D576C1 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		79262EED20B0D6F800D576C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		79262EF020B0D6F800D576C1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		79262EF220B0D6F800D576C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		798FBA462200F681009F525E /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		798FBA482200F9A9009F525E /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9ED93846F4CF300F5D5F104C /* Pods-WebRTC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WebRTC/Pods-WebRTC.debug.xcconfig"; sourceTree = "<group>"; };
 		A930FC9FB2A066EE0A3E2176 /* Pods-WebRTC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTC.release.xcconfig"; path = "Pods/Target Support Files/Pods-WebRTC/Pods-WebRTC.release.xcconfig"; sourceTree = "<group>"; };
 		CA606D7CF8E980599582389C /* libPods-WebRTC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WebRTC.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,7 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				79177C9C20B0E88B00BCD399 /* WebRTC-Demo-Bridging-Header.h */,
-				79262EEF20B0D6F800D576C1 /* LaunchScreen.storyboard */,
+				798FBA482200F9A9009F525E /* LaunchScreen.storyboard */,
 				79262EF220B0D6F800D576C1 /* Info.plist */,
 			);
 			path = SupportingFiles;
@@ -97,10 +97,30 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		7921989F220107C90051F03F /* MainScreen */ = {
+			isa = PBXGroup;
+			children = (
+				79262EE820B0D6F600D576C1 /* MainViewController.swift */,
+				798FBA462200F681009F525E /* MainViewController.xib */,
+			);
+			path = MainScreen;
+			sourceTree = "<group>";
+		};
+		792198A0220107E30051F03F /* VideoScreen */ = {
+			isa = PBXGroup;
+			children = (
+				79177CA720B2276400BCD399 /* VideoViewController.swift */,
+				79177CA920B2283F00BCD399 /* VideoViewController.xib */,
+			);
+			path = VideoScreen;
+			sourceTree = "<group>";
+		};
 		79262EDA20B0D6F500D576C1 = {
 			isa = PBXGroup;
 			children = (
-				79262EE520B0D6F600D576C1 /* WebRTC-Demo */,
+				798FBA422200F3B1009F525E /* Sources */,
+				79177C9B20B0E84600BCD399 /* Resources */,
+				79177C9A20B0E82B00BCD399 /* SupportingFiles */,
 				79262EE420B0D6F600D576C1 /* Products */,
 				2686C41B2430436930E82391 /* Pods */,
 				CFB6FD6BADE7DD44D7F5D315 /* Frameworks */,
@@ -115,21 +135,33 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		79262EE520B0D6F600D576C1 /* WebRTC-Demo */ = {
+		798FBA422200F3B1009F525E /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				798FBA452200F519009F525E /* Services */,
+				798FBA442200F510009F525E /* Screens */,
 				79177CA420B1C39700BCD399 /* Extensions */,
 				79262EE620B0D6F600D576C1 /* AppDelegate.swift */,
-				79262EE820B0D6F600D576C1 /* ViewController.swift */,
-				79177CA720B2276400BCD399 /* VideoViewController.swift */,
-				79262EEA20B0D6F600D576C1 /* Main.storyboard */,
-				79177CA920B2283F00BCD399 /* VideoViewController.xib */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		798FBA442200F510009F525E /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				7921989F220107C90051F03F /* MainScreen */,
+				792198A0220107E30051F03F /* VideoScreen */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		798FBA452200F519009F525E /* Services */ = {
+			isa = PBXGroup;
+			children = (
 				79177C9620B0DE7A00BCD399 /* WebRTCClient.swift */,
 				79177C9820B0DF2700BCD399 /* SignalClient.swift */,
-				79177C9B20B0E84600BCD399 /* Resources */,
-				79177C9A20B0E82B00BCD399 /* SupportingFiles */,
 			);
-			path = "WebRTC-Demo";
+			path = Services;
 			sourceTree = "<group>";
 		};
 		CFB6FD6BADE7DD44D7F5D315 /* Frameworks */ = {
@@ -202,10 +234,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79262EF120B0D6F800D576C1 /* LaunchScreen.storyboard in Resources */,
 				79262EEE20B0D6F800D576C1 /* Assets.xcassets in Resources */,
+				798FBA472200F681009F525E /* MainViewController.xib in Resources */,
 				79177CAA20B2283F00BCD399 /* VideoViewController.xib in Resources */,
-				79262EEC20B0D6F600D576C1 /* Main.storyboard in Resources */,
+				798FBA492200F9A9009F525E /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,7 +288,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				79177CA320B17A9C00BCD399 /* RTCSessionDescription+JSON.swift in Sources */,
-				79262EE920B0D6F600D576C1 /* ViewController.swift in Sources */,
+				79262EE920B0D6F600D576C1 /* MainViewController.swift in Sources */,
 				79177CA820B2276400BCD399 /* VideoViewController.swift in Sources */,
 				79262EE720B0D6F600D576C1 /* AppDelegate.swift in Sources */,
 				79177CA620B1F76E00BCD399 /* RTCStates.swift in Sources */,
@@ -267,25 +299,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		79262EEA20B0D6F600D576C1 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				79262EEB20B0D6F600D576C1 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		79262EEF20B0D6F800D576C1 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				79262EF020B0D6F800D576C1 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		79262EF320B0D6F800D576C1 /* Debug */ = {
@@ -414,14 +427,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J5HXNWPVL8;
-				INFOPLIST_FILE = "$(SRCROOT)/WebRTC-Demo/SupportingFiles/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/SupportingFiles/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.stasel.WebRTC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "WebRTC-Demo/SupportingFiles/WebRTC-Demo-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/SupportingFiles/WebRTC-Demo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -435,14 +448,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J5HXNWPVL8;
-				INFOPLIST_FILE = "$(SRCROOT)/WebRTC-Demo/SupportingFiles/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/SupportingFiles/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.stasel.WebRTC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "WebRTC-Demo/SupportingFiles/WebRTC-Demo-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/SupportingFiles/WebRTC-Demo-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

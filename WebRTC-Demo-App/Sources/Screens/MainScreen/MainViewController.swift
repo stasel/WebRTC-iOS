@@ -9,78 +9,87 @@
 import UIKit
 import AVFoundation
 
-class ViewController: UIViewController {
+class MainViewController: UIViewController {
 
-    let signalClient = SignalClient()
-    let webRTCClient = WebRTCClient()
+    private let signalClient = SignalClient()
+    private let webRTCClient = WebRTCClient()
     
-    @IBOutlet weak var speakerButton: UIButton!
-    @IBOutlet weak var signalingStatusLabel: UILabel!
-    @IBOutlet weak var localSdpStatusLabel: UILabel!
-    @IBOutlet weak var localCandidatesLabel: UILabel!
-    @IBOutlet weak var remoteSdpStatusLabel: UILabel!
-    @IBOutlet weak var remoteCandidatesLabel: UILabel!
-    @IBOutlet weak var muteButton: UIButton!
+    @IBOutlet private weak var speakerButton: UIButton?
+    @IBOutlet private weak var signalingStatusLabel: UILabel?
+    @IBOutlet private weak var localSdpStatusLabel: UILabel?
+    @IBOutlet private weak var localCandidatesLabel: UILabel?
+    @IBOutlet private weak var remoteSdpStatusLabel: UILabel?
+    @IBOutlet private weak var remoteCandidatesLabel: UILabel?
+    @IBOutlet private weak var muteButton: UIButton?
     
-    var signalingConnected: Bool = false {
+    private var signalingConnected: Bool = false {
         didSet {
             DispatchQueue.main.async {
                 if self.signalingConnected {
-                    self.signalingStatusLabel.text = "Connected"
-                    self.signalingStatusLabel.textColor = UIColor.green
+                    self.signalingStatusLabel?.text = "Connected"
+                    self.signalingStatusLabel?.textColor = UIColor.green
                 }
                 else {
-                    self.signalingStatusLabel.text = "Not connected"
-                    self.signalingStatusLabel.textColor = UIColor.red
+                    self.signalingStatusLabel?.text = "Not connected"
+                    self.signalingStatusLabel?.textColor = UIColor.red
                 }
             }
         }
     }
     
-    var hasLocalSdp: Bool = false {
+    private var hasLocalSdp: Bool = false {
         didSet {
             DispatchQueue.main.async {
-                self.localSdpStatusLabel.text = self.hasLocalSdp ? "✅" : "❌"
+                self.localSdpStatusLabel?.text = self.hasLocalSdp ? "✅" : "❌"
             }
         }
     }
     
-    var localCandidateCount: Int = 0 {
+    private var localCandidateCount: Int = 0 {
         didSet {
             DispatchQueue.main.async {
-                self.localCandidatesLabel.text = "\(self.localCandidateCount)"
+                self.localCandidatesLabel?.text = "\(self.localCandidateCount)"
             }
         }
     }
     
-    var hasRemoteSdp: Bool = false {
+    private var hasRemoteSdp: Bool = false {
         didSet {
             DispatchQueue.main.async {
-                self.remoteSdpStatusLabel.text = self.hasRemoteSdp ? "✅" : "❌"
+                self.remoteSdpStatusLabel?.text = self.hasRemoteSdp ? "✅" : "❌"
             }
         }
     }
     
-    var remoteCandidateCount: Int = 0 {
+    private var remoteCandidateCount: Int = 0 {
         didSet {
             DispatchQueue.main.async {
-                self.remoteCandidatesLabel.text = "\(self.remoteCandidateCount)"
+                self.remoteCandidatesLabel?.text = "\(self.remoteCandidateCount)"
             }
         }
     }
     
-    var speakerOn: Bool = false {
+    private var speakerOn: Bool = false {
         didSet {
             let title = "Speaker: \(self.speakerOn ? "On" : "Off" )"
-            self.speakerButton.setTitle(title, for: .normal)
+            self.speakerButton?.setTitle(title, for: .normal)
         }
     }
     
-    var mute: Bool = false {
+    private var mute: Bool = false {
         didSet {
             let title = "Mute: \(self.mute ? "on" : "off")"
-            self.muteButton.setTitle(title, for: .normal)
+            self.muteButton?.setTitle(title, for: .normal)
         }
+    }
+    
+    init() {
+        super.init(nibName: String(describing: MainViewController.self), bundle: Bundle.main)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -98,21 +107,21 @@ class ViewController: UIViewController {
         self.signalClient.delegate = self
     }
     
-    @IBAction func offerDidTap(_ sender: UIButton) {
+    @IBAction private func offerDidTap(_ sender: UIButton) {
         self.webRTCClient.offer { (sdp) in
             self.hasLocalSdp = true
             self.signalClient.send(sdp: sdp)
         }
     }
     
-    @IBAction func answerDidTap(_ sender: UIButton) {
+    @IBAction private func answerDidTap(_ sender: UIButton) {
         self.webRTCClient.answer { (localSdp) in
             self.hasLocalSdp = true
             self.signalClient.send(sdp: localSdp)
         }
     }
     
-    @IBAction func speakerDidTouch(_ sender: UIButton) {
+    @IBAction private func speakerDidTap(_ sender: UIButton) {
         let session = AVAudioSession.sharedInstance()
         do {
             try session.setCategory(AVAudioSession.Category.playAndRecord, mode: .videoChat, options: [])
@@ -132,12 +141,12 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func videoDidTap(_ sender: UIButton) {
+    @IBAction private func videoDidTap(_ sender: UIButton) {
         let vc = VideoViewController(webRTCClient: self.webRTCClient)
         self.present(vc, animated: true, completion: nil)
     }
     
-    @IBAction func muteDidTap(_ sender: UIButton) {
+    @IBAction private func muteDidTap(_ sender: UIButton) {
         self.mute = !self.mute
         if self.mute {
             self.webRTCClient.muteAudio()
@@ -148,7 +157,7 @@ class ViewController: UIViewController {
     }    
 }
 
-extension ViewController: SignalClientDelegate {
+extension MainViewController: SignalClientDelegate {
     func signalClientDidConnect(_ signalClient: SignalClient) {
         self.signalingConnected = true
     }
@@ -171,7 +180,7 @@ extension ViewController: SignalClientDelegate {
     }
 }
 
-extension ViewController: WebRTCClientDelegate {
+extension MainViewController: WebRTCClientDelegate {
     
     func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
         print("discovered local candidate")

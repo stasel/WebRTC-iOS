@@ -10,14 +10,15 @@ import UIKit
 
 class VideoViewController: UIViewController {
 
-    @IBOutlet weak var localVideoView: UIView!
+    @IBOutlet private weak var localVideoView: UIView?
     private let webRTCClient: WebRTCClient
-    
+
     init(webRTCClient: WebRTCClient) {
         self.webRTCClient = webRTCClient
         super.init(nibName: String(describing: VideoViewController.self), bundle: Bundle.main)
     }
     
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -27,9 +28,9 @@ class VideoViewController: UIViewController {
         
         #if arch(arm64)
             // Using metal (arm64 only)
-            let localRenderer = RTCMTLVideoView(frame: self.localVideoView.frame)
-            localRenderer.videoContentMode = .scaleAspectFill
+            let localRenderer = RTCMTLVideoView(frame: self.localVideoView?.frame ?? CGRect.zero)
             let remoteRenderer = RTCMTLVideoView(frame: self.view.frame)
+            localRenderer.videoContentMode = .scaleAspectFill
             remoteRenderer.videoContentMode = .scaleAspectFill
         #else
             // Using OpenGLES for the rest
@@ -37,16 +38,17 @@ class VideoViewController: UIViewController {
             let remoteRenderer = RTCEAGLVideoView(frame: self.view.frame)
         #endif
 
-        
         self.webRTCClient.startCaptureLocalVideo(renderer: localRenderer)
         self.webRTCClient.renderRemoteVideo(to: remoteRenderer)
         
-        self.embedView(localRenderer, into: self.localVideoView)
+        if let localVideoView = self.localVideoView {
+            self.embedView(localRenderer, into: localVideoView)
+        }
         self.embedView(remoteRenderer, into: self.view)
         self.view.sendSubviewToBack(remoteRenderer)
     }
     
-    func embedView(_ view: UIView, into containerView: UIView) {
+    private func embedView(_ view: UIView, into containerView: UIView) {
         containerView.addSubview(view)
         view.translatesAutoresizingMaskIntoConstraints = false
         containerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|",
@@ -61,7 +63,7 @@ class VideoViewController: UIViewController {
         containerView.layoutIfNeeded()
     }
     
-    @IBAction func backDidTap(_ sender: Any) {
+    @IBAction private func backDidTap(_ sender: Any) {
         self.dismiss(animated: true)
     }
 }

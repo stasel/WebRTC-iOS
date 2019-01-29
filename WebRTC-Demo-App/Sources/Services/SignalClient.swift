@@ -16,7 +16,7 @@ protocol SignalClientDelegate: class {
     func signalClient(_ signalClient: SignalClient, didReceiveCandidate candidate: RTCIceCandidate)
 }
 
-struct Message: Codable {
+fileprivate struct Message: Codable {
     enum PayloadType: String, Codable {
         case sdp, candidate
     }
@@ -24,7 +24,7 @@ struct Message: Codable {
     let payload: String
 }
 
-class SignalClient {
+final class SignalClient {
     
     private let serverUrl = "ws://192.168.1.252:8080"
     private let socket: WebSocket
@@ -32,6 +32,7 @@ class SignalClient {
     
     init() {
         self.socket = WebSocket(url: URL(string: self.serverUrl)!)
+        
     }
     func connect() {
         self.socket.delegate = self

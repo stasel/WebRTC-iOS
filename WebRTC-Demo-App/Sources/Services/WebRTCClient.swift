@@ -12,15 +12,14 @@ protocol WebRTCClientDelegate: class {
     func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)
 }
 
-class WebRTCClient: NSObject {
+final class WebRTCClient: NSObject {
     
-    private let factory: RTCPeerConnectionFactory
-    let peerConnection: RTCPeerConnection
     weak var delegate: WebRTCClientDelegate?
-    var localCandidates = [RTCIceCandidate]()
+    private let factory: RTCPeerConnectionFactory
+    private let peerConnection: RTCPeerConnection
+    private var localCandidates = [RTCIceCandidate]()
     private let mediaConstrains = [kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
-                                   kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueTrue]
-    
+                                   kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueTrue]    
     private var videoCapturer: RTCVideoCapturer?
     private var remoteStream: RTCMediaStream?
     private var localVideoTrack: RTCVideoTrack?
@@ -34,7 +33,7 @@ class WebRTCClient: NSObject {
                                               optionalConstraints: ["DtlsSrtpKeyAgreement":kRTCMediaConstraintsValueTrue])
         let config = RTCConfiguration()
         
-        // We use Google's public stun/turn server. For production apps you should deploy your own stun/turn servers.
+        // We use Google's public stun server. For production apps you should deploy your own stun/turn servers.
         config.iceServers = [RTCIceServer(urlStrings: ["stun:stun.l.google.com:19302"])]
         
         // Unified plan is more superior than planB
