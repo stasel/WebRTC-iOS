@@ -11,7 +11,7 @@ import AVFoundation
 
 class MainViewController: UIViewController {
 
-    private let signalClient: SignalClient
+    private let signalClient: SignalingClient
     private let webRTCClient: WebRTCClient
     
     @IBOutlet private weak var speakerButton: UIButton?
@@ -83,7 +83,7 @@ class MainViewController: UIViewController {
         }
     }
     
-    init(signalClient: SignalClient, webRTCClient: WebRTCClient) {
+    init(signalClient: SignalingClient, webRTCClient: WebRTCClient) {
         self.signalClient = signalClient
         self.webRTCClient = webRTCClient
         super.init(nibName: String(describing: MainViewController.self), bundle: Bundle.main)
@@ -96,7 +96,7 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.title = "WebRTC Demo"
         self.signalingConnected = false
         self.hasLocalSdp = false
         self.hasRemoteSdp = false
@@ -160,22 +160,22 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: SignalClientDelegate {
-    func signalClientDidConnect(_ signalClient: SignalClient) {
+    func signalClientDidConnect(_ signalClient: SignalingClient) {
         self.signalingConnected = true
     }
     
-    func signalClientDidDisconnect(_ signalClient: SignalClient) {
+    func signalClientDidDisconnect(_ signalClient: SignalingClient) {
         self.signalingConnected = false
     }
     
-    func signalClient(_ signalClient: SignalClient, didReceiveRemoteSdp sdp: RTCSessionDescription) {
+    func signalClient(_ signalClient: SignalingClient, didReceiveRemoteSdp sdp: RTCSessionDescription) {
         print("Received remote sdp")
         self.webRTCClient.set(remoteSdp: sdp) { (error) in
             self.hasRemoteSdp = true
         }
     }
     
-    func signalClient(_ signalClient: SignalClient, didReceiveCandidate candidate: RTCIceCandidate) {
+    func signalClient(_ signalClient: SignalingClient, didReceiveCandidate candidate: RTCIceCandidate) {
         print("Received remote candidate")
         self.remoteCandidateCount += 1
         self.webRTCClient.set(remoteCandidate: candidate)

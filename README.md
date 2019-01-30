@@ -22,7 +22,7 @@ XCode 9.4 users can still use the `swift-4.0` branch
 2. Navigate to `WebRTC-Demo-app` folder
 3. Run `pod install`
 4. Open `WebRTC-Demo.xcworkspace`
-4. Modify `SignalClient.swift` and set the `serverUrl` variable to your signaling server ip/host. Don't use `localhost` or `127.0.0.1` if you plan to connect other devices in your network to your mac.
+4. Open `Config.swift` and set the `defaultSignalingServerUrl` variable to your signaling server ip/host. Don't use `localhost` or `127.0.0.1` if you plan to connect other devices in your network to your mac.
 5. Build and run on devices or on a simulator (video capture is not supported on a simulator).
 
 ## Run instructions

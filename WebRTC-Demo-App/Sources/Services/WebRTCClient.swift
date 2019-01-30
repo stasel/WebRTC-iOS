@@ -24,7 +24,12 @@ final class WebRTCClient: NSObject {
     private var remoteStream: RTCMediaStream?
     private var localVideoTrack: RTCVideoTrack?
     
+    @available(*, unavailable)
     override init() {
+        fatalError("WebRTCClient:init is unavailable")
+    }
+    
+    required init(iceServers: [String]) {
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
         let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
         self.factory = RTCPeerConnectionFactory(encoderFactory: videoEncoderFactory, decoderFactory: videoDecoderFactory)
@@ -32,9 +37,7 @@ final class WebRTCClient: NSObject {
         let constraints = RTCMediaConstraints(mandatoryConstraints: nil,
                                               optionalConstraints: ["DtlsSrtpKeyAgreement":kRTCMediaConstraintsValueTrue])
         let config = RTCConfiguration()
-        
-        // We use Google's public stun server. For production apps you should deploy your own stun/turn servers.
-        config.iceServers = [RTCIceServer(urlStrings: ["stun:stun.l.google.com:19302"])]
+        config.iceServers = [RTCIceServer(urlStrings: iceServers)]
         
         // Unified plan is more superior than planB
         config.sdpSemantics = .unifiedPlan

@@ -10,10 +10,10 @@ import Foundation
 import Starscream
 
 protocol SignalClientDelegate: class {
-    func signalClientDidConnect(_ signalClient: SignalClient)
-    func signalClientDidDisconnect(_ signalClient: SignalClient)
-    func signalClient(_ signalClient: SignalClient, didReceiveRemoteSdp sdp: RTCSessionDescription)
-    func signalClient(_ signalClient: SignalClient, didReceiveCandidate candidate: RTCIceCandidate)
+    func signalClientDidConnect(_ signalClient: SignalingClient)
+    func signalClientDidDisconnect(_ signalClient: SignalingClient)
+    func signalClient(_ signalClient: SignalingClient, didReceiveRemoteSdp sdp: RTCSessionDescription)
+    func signalClient(_ signalClient: SignalingClient, didReceiveCandidate candidate: RTCIceCandidate)
 }
 
 fileprivate struct Message: Codable {
@@ -24,14 +24,13 @@ fileprivate struct Message: Codable {
     let payload: String
 }
 
-final class SignalClient {
+final class SignalingClient {
     
-    private let serverUrl = "ws://192.168.1.252:8080"
     private let socket: WebSocket
     weak var delegate: SignalClientDelegate?
     
-    init() {
-        self.socket = WebSocket(url: URL(string: self.serverUrl)!)
+    init(serverUrl: URL) {
+        self.socket = WebSocket(url: serverUrl)
         
     }
     func connect() {
@@ -58,7 +57,7 @@ final class SignalClient {
 }
 
 
-extension SignalClient: WebSocketDelegate {
+extension SignalingClient: WebSocketDelegate {
     func websocketDidConnect(socket: WebSocketClient) {
         self.delegate?.signalClientDidConnect(self)
     }

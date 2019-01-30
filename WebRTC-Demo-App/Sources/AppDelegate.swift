@@ -11,9 +11,11 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    private var window: UIWindow?
+    private let config = Config.default
+    
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = self.buildMainViewController()
         window.makeKeyAndVisible()
@@ -21,11 +23,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    private func buildMainViewController() -> MainViewController {
-        let signalClient = SignalClient()
-        let webRTCClient = WebRTCClient()
-        let mainViewController = MainViewController(signalClient: signalClient, webRTCClient: webRTCClient)
-        return mainViewController
+    private func buildMainViewController() -> UIViewController {
+        let signalClient = SignalingClient(serverUrl: self.config.signalingServerUrl)
+        let webRTCClient = WebRTCClient(iceServers: self.config.webRTCIceServers)
+        let mainViewController = MainViewController(signalClient: signalClient,
+                                                    webRTCClient: webRTCClient)
+        let navViewController = UINavigationController(rootViewController: mainViewController)
+        navViewController.navigationBar.isTranslucent = false
+        if #available(iOS 11.0, *) {
+            navViewController.navigationBar.prefersLargeTitles = true
+        }
+        return navViewController
     }
 }
 
