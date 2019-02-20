@@ -16,17 +16,11 @@ protocol SignalClientDelegate: class {
     func signalClient(_ signalClient: SignalingClient, didReceiveCandidate candidate: RTCIceCandidate)
 }
 
-fileprivate struct Message: Codable {
-    enum PayloadType: String, Codable {
-        case sdp, candidate
-    }
-    let type: PayloadType
-    let payload: String
-}
-
 final class SignalingClient {
     
     private let socket: WebSocket
+    private let decoder = JSONDecoder()
+    private let encoder = JSONEncoder()
     weak var delegate: SignalClientDelegate?
     
     init(serverUrl: URL) {
@@ -38,20 +32,25 @@ final class SignalingClient {
         self.socket.connect()
     }
     
-    func send(sdp: RTCSessionDescription) {
-        let message = Message(type: .sdp, payload: sdp.jsonString() ?? "")
-        if let dataMessage = try? JSONEncoder().encode(message),
-            let stringMessage = String(data: dataMessage, encoding: .utf8) {
-            self.socket.write(string: stringMessage)
+    func send(sdp rtcSdp: RTCSessionDescription) {
+        let message = Message.sdp(SessionDescription(from: rtcSdp))
+        do {
+            let dataMessage = try self.encoder.encode(message)
+            self.socket.write(data: dataMessage)
+        }
+        catch {
+            debugPrint("Warning: Could not encode sdp: \(error)")
         }
     }
     
-    func send(candidate: RTCIceCandidate) {
-        let message = Message(type: .candidate,
-                              payload: candidate.jsonString() ?? "")
-        if let dataMessage = try? JSONEncoder().encode(message),
-            let stringMessage = String(data: dataMessage, encoding: .utf8){
-            self.socket.write(string: stringMessage)
+    func send(candidate rtcIceCandidate: RTCIceCandidate) {
+        let message = Message.candidate(IceCandidate(from: rtcIceCandidate))
+        do {
+            let dataMessage = try self.encoder.encode(message)
+            self.socket.write(data: dataMessage)
+        }
+        catch {
+            debugPrint("Warning: Could not encode candidate: \(error)")
         }
     }
 }
@@ -67,30 +66,29 @@ extension SignalingClient: WebSocketDelegate {
         
         // try to reconnect every two seconds
         DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-            print("Trying to reconnect to signaling server...")
+            debugPrint("Trying to reconnect to signaling server...")
             self.socket.connect()
         }
     }
     
-    func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
-        guard let data = text.data(using: .utf8),
-              let message = try? JSONDecoder().decode(Message.self, from: data) else {
-                return
+    func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
+        let message: Message
+        do {
+            message = try self.decoder.decode(Message.self, from: data)
+        }
+        catch {
+            debugPrint("Warning: Could not decode incoming message: \(error)")
+            return
         }
         
-        switch message.type {
-        case .candidate:
-            if let candidate = RTCIceCandidate.fromJsonString(message.payload) {
-                self.delegate?.signalClient(self, didReceiveCandidate: candidate)
-            }
-        case .sdp:
-            if let sdp = RTCSessionDescription.fromJsonString(message.payload) {
-                self.delegate?.signalClient(self, didReceiveRemoteSdp: sdp)
-            }
+        switch message {
+        case .candidate(let iceCandidate):
+            self.delegate?.signalClient(self, didReceiveCandidate: iceCandidate.rtcIceCandidate)
+        case .sdp(let sessionDescription):
+            self.delegate?.signalClient(self, didReceiveRemoteSdp: sessionDescription.rtcSessionDescription)
         }
     }
     
-    func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
-        
+    func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
     }
 }
