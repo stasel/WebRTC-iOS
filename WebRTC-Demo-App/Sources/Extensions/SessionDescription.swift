@@ -2,8 +2,8 @@
 //  SessionDescription.swift
 //  WebRTC-Demo
 //
-//  Created by Stas Seldin on 20/02/2019.
-//  Copyright © 2019 Stas Seldin. All rights reserved.
+//  Created by Stasel on 20/02/2019.
+//  Copyright © 2019 Stasel. All rights reserved.
 //
 
 import Foundation

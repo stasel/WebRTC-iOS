@@ -2,8 +2,8 @@
 //  ViewController.swift
 //  WebRTC
 //
-//  Created by Stas Seldin on 20/05/2018.
-//  Copyright © 2018 Stas Seldin. All rights reserved.
+//  Created by Stasel on 20/05/2018.
+//  Copyright © 2018 Stasel. All rights reserved.
 //
 
 import UIKit
