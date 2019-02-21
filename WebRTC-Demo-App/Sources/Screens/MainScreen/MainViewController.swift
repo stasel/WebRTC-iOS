@@ -124,23 +124,13 @@ class MainViewController: UIViewController {
     }
     
     @IBAction private func speakerDidTap(_ sender: UIButton) {
-        let session = AVAudioSession.sharedInstance()
-        do {
-            try session.setCategory(AVAudioSession.Category.playAndRecord, mode: .videoChat, options: [])
-            
-            if self.speakerOn {
-                try session.overrideOutputAudioPort(.none)
-            }
-            else {
-                try session.overrideOutputAudioPort(.speaker)
-            }
-            
-            try session.setActive(true)
-            self.speakerOn = !self.speakerOn
+        if self.speakerOn {
+            self.webRTCClient.speakerOff()
         }
-        catch let error {
-            print("Couldn't set audio to speaker: \(error)")
+        else {
+            self.webRTCClient.speakerOn()
         }
+        self.speakerOn = !self.speakerOn
     }
     
     @IBAction private func videoDidTap(_ sender: UIButton) {
@@ -183,12 +173,23 @@ extension MainViewController: SignalClientDelegate {
 }
 
 extension MainViewController: WebRTCClientDelegate {
-    
     func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
         print("discovered local candidate")
         self.localCandidateCount += 1
         self.signalClient.send(candidate: candidate)
-
+    }
+    
+    func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
+//        let background: UIColor
+//        switch state {
+//        case .new, .checking, .count:   background = .white
+//        case .connected, .completed:    background = .green
+//        case .disconnected:             background = .orange
+//        case .failed, .closed:          background = .red
+//        }
+//        DispatchQueue.main.async {
+//            self.view.backgroundColor = background
+//        }
     }
 }
 
