@@ -21,6 +21,7 @@ class MainViewController: UIViewController {
     @IBOutlet private weak var remoteSdpStatusLabel: UILabel?
     @IBOutlet private weak var remoteCandidatesLabel: UILabel?
     @IBOutlet private weak var muteButton: UIButton?
+    @IBOutlet private weak var webRTCStatusLabel: UILabel?
     
     private var signalingConnected: Bool = false {
         didSet {
@@ -103,6 +104,7 @@ class MainViewController: UIViewController {
         self.localCandidateCount = 0
         self.remoteCandidateCount = 0
         self.speakerOn = false
+        self.webRTCStatusLabel?.text = "New"
         
         self.signalClient.connect()
         self.webRTCClient.delegate = self
@@ -180,16 +182,21 @@ extension MainViewController: WebRTCClientDelegate {
     }
     
     func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
-//        let background: UIColor
-//        switch state {
-//        case .new, .checking, .count:   background = .white
-//        case .connected, .completed:    background = .green
-//        case .disconnected:             background = .orange
-//        case .failed, .closed:          background = .red
-//        }
-//        DispatchQueue.main.async {
-//            self.view.backgroundColor = background
-//        }
+        let textColor: UIColor
+        switch state {
+        case .connected, .completed:
+            textColor = .green
+        case .disconnected:
+            textColor = .orange
+        case .failed, .closed:
+            textColor = .red
+        case .new, .checking, .count:
+            textColor = .black
+        }
+        DispatchQueue.main.async {
+            self.webRTCStatusLabel?.text = state.description.capitalized
+            self.webRTCStatusLabel?.textColor = textColor
+        }
     }
 }
 
