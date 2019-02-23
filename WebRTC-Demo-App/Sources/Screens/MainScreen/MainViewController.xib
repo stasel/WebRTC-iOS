@@ -142,6 +142,13 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rst-gF-abW">
+                    <rect key="frame" x="285" y="481" width="70" height="30"/>
+                    <state key="normal" title="Send data"/>
+                    <connections>
+                        <action selector="sendDataDidTap:" destination="-1" eventType="touchUpInside" id="2hT-yS-Fws"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -155,6 +162,7 @@
                 <constraint firstItem="ZBg-a1-eEf" firstAttribute="top" secondItem="f7d-GP-pOe" secondAttribute="bottom" constant="20" id="CT8-UK-a4E"/>
                 <constraint firstItem="yay-HM-9I3" firstAttribute="leading" secondItem="qlz-7Z-2U3" secondAttribute="trailing" constant="10" id="DxR-0Z-9BP"/>
                 <constraint firstItem="ltd-4m-UTj" firstAttribute="trailing" secondItem="Iv3-su-6Ge" secondAttribute="trailing" constant="20" id="EGE-Uj-mAB"/>
+                <constraint firstItem="Rst-gF-abW" firstAttribute="trailing" secondItem="Ibb-KE-sVk" secondAttribute="trailing" id="Egb-jA-ltl"/>
                 <constraint firstItem="pnF-0b-tqS" firstAttribute="centerY" secondItem="fY5-qQ-oOI" secondAttribute="centerY" id="FYt-Kj-zoO"/>
                 <constraint firstItem="Iv3-su-6Ge" firstAttribute="top" secondItem="xPu-fe-sIe" secondAttribute="bottom" constant="10" id="GLu-xi-eOD"/>
                 <constraint firstItem="2vW-Ad-Yxa" firstAttribute="centerY" secondItem="tfj-wv-USl" secondAttribute="centerY" id="Gxp-g5-hcH"/>
@@ -182,6 +190,7 @@
                 <constraint firstItem="ltd-4m-UTj" firstAttribute="trailing" secondItem="Ibb-KE-sVk" secondAttribute="trailing" constant="20" id="tsn-af-FqN"/>
                 <constraint firstItem="xPu-fe-sIe" firstAttribute="top" secondItem="Ibb-KE-sVk" secondAttribute="bottom" constant="8" id="uk3-T2-k7u"/>
                 <constraint firstItem="fY5-qQ-oOI" firstAttribute="top" secondItem="ZBg-a1-eEf" secondAttribute="bottom" constant="20" id="vn8-6u-AlF"/>
+                <constraint firstItem="Rst-gF-abW" firstAttribute="firstBaseline" secondItem="5gZ-Ix-Nf9" secondAttribute="firstBaseline" id="xf9-q9-dQX"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ltd-4m-UTj"/>
         </view>

@@ -148,7 +148,24 @@ class MainViewController: UIViewController {
         else {
             self.webRTCClient.unmuteAudio()
         }
-    }    
+    }
+    
+    @IBAction func sendDataDidTap(_ sender: UIButton) {
+        let alert = UIAlertController(title: "Send a message to the other peer",
+                                      message: "This will be transferred over WebRTC data channel",
+                                      preferredStyle: .alert)
+        alert.addTextField { (textField) in
+            textField.placeholder = "Message to send"
+        }
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Send", style: .default, handler: { [weak self, unowned alert] _ in
+            guard let dataToSend = alert.textFields?.first?.text?.data(using: .utf8) else {
+                return
+            }
+            self?.webRTCClient.sendData(dataToSend)
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension MainViewController: SignalClientDelegate {
@@ -175,6 +192,7 @@ extension MainViewController: SignalClientDelegate {
 }
 
 extension MainViewController: WebRTCClientDelegate {
+    
     func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
         print("discovered local candidate")
         self.localCandidateCount += 1
@@ -196,6 +214,15 @@ extension MainViewController: WebRTCClientDelegate {
         DispatchQueue.main.async {
             self.webRTCStatusLabel?.text = state.description.capitalized
             self.webRTCStatusLabel?.textColor = textColor
+        }
+    }
+    
+    func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data) {
+        DispatchQueue.main.async {
+            let message = String(data: data, encoding: .utf8) ?? "(Binary: \(data.count) bytes)"
+            let alert = UIAlertController(title: "Message from WebRTC", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
 }
