@@ -210,6 +210,8 @@ extension MainViewController: WebRTCClientDelegate {
             textColor = .red
         case .new, .checking, .count:
             textColor = .black
+        @unknown default:
+            textColor = .black
         }
         DispatchQueue.main.async {
             self.webRTCStatusLabel?.text = state.description.capitalized

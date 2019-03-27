@@ -8,11 +8,9 @@ This demo app's purpose is to demonstrate the bare minimum required to establish
  
 
 ## Requirements
-1. Xcode 10.0 or newer
+1. Xcode 10.2 or later
 2. Cocoapods
 3. Node.js + npm
-
-XCode 9.4 users can still use the `swift-4.0` branch
 
 ## Setup instructions
 1. Start the signaling server:

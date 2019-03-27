@@ -11,7 +11,7 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    private var window: UIWindow?
+    internal var window: UIWindow?
     private let config = Config.default
     
     func application(_ application: UIApplication,

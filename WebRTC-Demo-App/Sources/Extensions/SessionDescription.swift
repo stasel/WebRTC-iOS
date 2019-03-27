@@ -33,6 +33,8 @@ struct SessionDescription: Codable {
         case .offer:    self.type = .offer
         case .prAnswer: self.type = .prAnswer
         case .answer:   self.type = .answer
+        @unknown default:
+            fatalError("Unknown RTCSessionDescription type: \(rtcSessionDescription.type.rawValue)")
         }
     }
     
