@@ -50,8 +50,9 @@ WebRTC and CallKit talk from 2016: https://youtu.be/JB2MdcY1MKs?t=6m23s
 * WebRTC source code: https://webrtc.googlesource.com/src
 * WebRTC iOS compile guide: https://webrtc.org/native-code/ios/
 * appear.in dev blog post: https://github.com/appearin/tech.appear.in/blob/master/source/_posts/Getting-started-with-WebRTC-on-iOS.md (it uses old WebRTC api but still very informative)
-* AppRTC - a more detailed app to demonstrate WebRTC: https://github.com/ISBX/apprtc-ios
+* AppRTC: More detailed app to demonstrate WebRTC: https://webrtc.googlesource.com/src/+/refs/heads/master/examples/objc/AppRTCMobile/
 * Useful information from pexip: https://pexip.github.io/pexkit-sdk/ios_media
+* [Video Chat using WebRTC and Firestore](https://medium.com/@quangtqag/video-chat-using-webrtc-and-firestore-a925de6f89f4) by [Quang](https://github.com/quangtqag)
 
 ## Credits:
 * App icon made by [SimpleIcon](https://www.flaticon.com/authors/simpleicon) from [www.flaticon.com](https://www.flaticon.com) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
