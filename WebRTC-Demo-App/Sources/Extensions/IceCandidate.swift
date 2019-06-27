@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import WebRTC
 
 /// This struct is a swift wrapper over `RTCIceCandidate` for easy encode and decode
 struct IceCandidate: Codable {

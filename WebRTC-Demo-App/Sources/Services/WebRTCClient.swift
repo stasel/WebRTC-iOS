@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import WebRTC
 
 protocol WebRTCClientDelegate: class {
     func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)

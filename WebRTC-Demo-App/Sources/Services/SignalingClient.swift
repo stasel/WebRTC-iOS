@@ -8,6 +8,7 @@
 
 import Foundation
 import Starscream
+import WebRTC
 
 protocol SignalClientDelegate: class {
     func signalClientDidConnect(_ signalClient: SignalingClient)
