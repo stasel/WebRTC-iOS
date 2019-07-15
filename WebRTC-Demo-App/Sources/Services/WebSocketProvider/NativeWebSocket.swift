@@ -7,10 +7,10 @@
 //
 
 import Foundation
-import Network
 
 @available(iOS 13.0, *)
 class NativeWebSocket: WebSocketProvider {
+    
     var delegate: WebSocketProviderDelegate?
     private let url: URL
     private var socket: URLSessionWebSocketTask?
