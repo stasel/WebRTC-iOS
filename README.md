@@ -8,7 +8,7 @@ This demo app's purpose is to demonstrate the bare minimum required to establish
  
 
 ## Requirements
-1. Xcode 10.2 or later
+1. Xcode 11 or later
 2. Cocoapods
 3. Node.js + npm
 

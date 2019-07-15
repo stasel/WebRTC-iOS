@@ -107,9 +107,9 @@ class MainViewController: UIViewController {
         self.speakerOn = false
         self.webRTCStatusLabel?.text = "New"
         
-        self.signalClient.connect()
         self.webRTCClient.delegate = self
         self.signalClient.delegate = self
+        self.signalClient.connect()
     }
     
     @IBAction private func offerDidTap(_ sender: UIButton) {
