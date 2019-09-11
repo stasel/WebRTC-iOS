@@ -138,7 +138,6 @@ class MainViewController: UIViewController {
     
     @IBAction private func videoDidTap(_ sender: UIButton) {
         let vc = VideoViewController(webRTCClient: self.webRTCClient)
-        vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true, completion: nil)
     }
     
