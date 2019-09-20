@@ -14,6 +14,7 @@ class MainViewController: UIViewController {
 
     private let signalClient: SignalingClient
     private let webRTCClient: WebRTCClient
+    private lazy var videoViewController = VideoViewController(webRTCClient: self.webRTCClient)
     
     @IBOutlet private weak var speakerButton: UIButton?
     @IBOutlet private weak var signalingStatusLabel: UILabel?
@@ -137,8 +138,7 @@ class MainViewController: UIViewController {
     }
     
     @IBAction private func videoDidTap(_ sender: UIButton) {
-        let vc = VideoViewController(webRTCClient: self.webRTCClient)
-        self.present(vc, animated: true, completion: nil)
+        self.present(videoViewController, animated: true, completion: nil)
     }
     
     @IBAction private func muteDidTap(_ sender: UIButton) {
