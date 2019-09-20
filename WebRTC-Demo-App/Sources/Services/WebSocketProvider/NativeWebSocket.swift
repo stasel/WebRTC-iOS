@@ -9,21 +9,22 @@
 import Foundation
 
 @available(iOS 13.0, *)
-class NativeWebSocket: WebSocketProvider {
+class NativeWebSocket: NSObject, WebSocketProvider {
     
     var delegate: WebSocketProviderDelegate?
     private let url: URL
     private var socket: URLSessionWebSocketTask?
+    private lazy var urlSession: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
     init(url: URL) {
         self.url = url
+        super.init()
     }
 
     func connect() {
-        let socket = URLSession.shared.webSocketTask(with: url)
+        let socket = urlSession.webSocketTask(with: url)
         socket.resume()
         self.socket = socket
-        self.delegate?.webSocketDidConnect(self)
         self.readMessage()
     }
 
@@ -54,5 +55,16 @@ class NativeWebSocket: WebSocketProvider {
         self.socket?.cancel()
         self.socket = nil
         self.delegate?.webSocketDidDisconnect(self)
+    }
+}
+
+@available(iOS 13.0, *)
+extension NativeWebSocket: URLSessionWebSocketDelegate, URLSessionDelegate  {
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        self.delegate?.webSocketDidConnect(self)
+    }
+    
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+        self.disconnect()
     }
 }
