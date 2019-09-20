@@ -1,20 +1,16 @@
 PODS:
   - GoogleWebRTC (1.1.29024)
-  - Starscream (3.1.0)
 
 DEPENDENCIES:
   - GoogleWebRTC (~> 1.1)
-  - Starscream (~> 3.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - GoogleWebRTC
-    - Starscream
 
 SPEC CHECKSUMS:
   GoogleWebRTC: 3d459ebbdc9461f94442e7bf03e5571238f390f7
-  Starscream: 08172b481e145289c4930cb567230fb55897cfa4
 
-PODFILE CHECKSUM: 709cc2304888400d5386b5dee17e5bf7e07c198e
+PODFILE CHECKSUM: 04f4e5038cf468943b19944d4c20df27cf2d3fad
 
 COCOAPODS: 1.7.2
