@@ -1,7 +1,7 @@
 # WebRTC-iOS
 A simple native WebRTC demo iOS app using swift. 
 
-Early Xcode 11 adapters? check out [xcode-11](https://github.com/stasel/WebRTC-iOS/tree/xcode-11) branch.
+> ##  ⚠️ This is a legacy branch for XCode 10. If you use XCode 11 or later please use the [master](https://github.com/stasel/WebRTC-iOS) branch.
 
 ![Screenshots](images/WebRTC.png)
 
