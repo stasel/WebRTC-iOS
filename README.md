@@ -8,11 +8,13 @@ This demo app's purpose is to demonstrate the bare minimum required to establish
  
 
 ## Requirements
-1. Xcode 11.0 Beta or later
+1. Xcode 11.0 or later
 2. Cocoapods
 3. Node.js + npm (For NodeJS Signaling server)  
 **- OR -**  
-MacOS 10.15 (For Swift signaling server)
+macOS 10.15 (For Swift signaling server)
+
+Note: If you still use XCode-10, please use the [xcode-10](https://github.com/stasel/WebRTC-iOS/tree/xcode-11) branch.
 
 ## Setup instructions
 1. Start the signaling server (Either NodeJS or Swift)
