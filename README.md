@@ -65,7 +65,7 @@ WebRTC and CallKit talk from 2016: https://youtu.be/JB2MdcY1MKs?t=6m23s
 ## References:
 * WebRTC website: https://webrtc.org/
 * WebRTC source code: https://webrtc.googlesource.com/src
-* WebRTC iOS compile guide: https://webrtc.org/native-code/ios/
+* WebRTC iOS compile guide: https://webrtc.github.io/webrtc-org/native-code/ios/
 * appear.in dev blog post: https://github.com/appearin/tech.appear.in/blob/master/source/_posts/Getting-started-with-WebRTC-on-iOS.md (it uses old WebRTC api but still very informative)
 * AppRTC: More detailed app to demonstrate WebRTC: https://webrtc.googlesource.com/src/+/refs/heads/master/examples/objc/AppRTCMobile/
 * Useful information from pexip: https://pexip.github.io/pexkit-sdk/ios_media
