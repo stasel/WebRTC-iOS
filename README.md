@@ -8,19 +8,19 @@ This demo app's purpose is to demonstrate the bare minimum required to establish
  
 
 ## Requirements
-1. Xcode 11.0 or later
-2. Cocoapods
+1. Xcode 12.0 or later
 3. Node.js + npm (For NodeJS Signaling server)  
 **- OR -**  
-macOS 10.15 (For Swift signaling server)
+macOS 10.15 or later (For Swift signaling server)
 
-Note: If you still use XCode-10, please use the [xcode-10](https://github.com/stasel/WebRTC-iOS/tree/xcode-11) branch.
+If you use an older version of Xcode, check out the legacy branches:
+* [xcode-10](https://github.com/stasel/WebRTC-iOS/tree/xcode-10)
+* [xcode-11](https://github.com/stasel/WebRTC-iOS/tree/xcode-11)
 
 ## Setup instructions
 1. Start the signaling server (Either NodeJS or Swift)
 2. Navigate to `WebRTC-Demo-app` folder
-3. Run `pod install`
-4. Open `WebRTC-Demo.xcworkspace`
+3. Open `WebRTC-Demo.xcworkspace`
 4. Open `Config.swift` and set the `defaultSignalingServerUrl` variable to your signaling server ip/host. Don't use `localhost` or `127.0.0.1` if you plan to connect other devices in your network to your mac.
 5. Build and run on devices or on a simulator (video capture is not supported on a simulator).
 
