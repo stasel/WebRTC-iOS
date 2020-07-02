@@ -14,8 +14,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "WebRTC",
-            url: "https://www.dropbox.com/s/r6hod7j8m2ruico/WebRTC.xcframework.zip?dl=1",
-            checksum: "9c6a06509d67a842542855f0d63580cffe2b9e35eea1af9da07c1540f79fc64a"
+            url: "https://www.dropbox.com/s/2bshi6s9s9aimfa/WebRTC-2020-07-02T19-17-50.xcframework.zip?dl=1",
+            checksum: "f2ee6b8945e7b73ffdaec754a5e96a286362b1891b75a44e37650ec0fbe6eb75"
         ),
     ]
 )
