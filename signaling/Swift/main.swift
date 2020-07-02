@@ -2,8 +2,8 @@
 //  main.swift
 //  SignalingServer
 //
-//  Created by Stas Seldin on 15/07/2019.
-//  Copyright © 2019 Stas Seldin. All rights reserved.
+//  Created by stasel on 15/07/2019.
+//  Copyright © 2019 stasel. All rights reserved.
 //
 
 import Foundation
