@@ -210,7 +210,7 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        debugPrint("peerConnection did remote stream")
+        debugPrint("peerConnection did remove stream")
     }
     
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
