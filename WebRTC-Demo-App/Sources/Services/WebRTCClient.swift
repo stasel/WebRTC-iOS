@@ -239,7 +239,26 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
         self.remoteDataChannel = dataChannel
     }
 }
+extension WebRTCClient {
+    private func setTrackEnabled<T: RTCMediaStreamTrack>(_ type: T.Type, isEnabled: Bool) {
+        peerConnection.transceivers
+            .compactMap { return $0.sender.track as? T }
+            .forEach { $0.isEnabled = isEnabled }
+    }
+}
 
+// MARK: - Video control
+extension WebRTCClient {
+    func hideVideo() {
+        self.setVideoEnabled(false)
+    }
+    func showVideo() {
+        self.setVideoEnabled(true)
+    }
+    private func setVideoEnabled(_ isEnabled: Bool) {
+        setTrackEnabled(RTCVideoTrack.self, isEnabled: isEnabled)
+    }
+}
 // MARK:- Audio control
 extension WebRTCClient {
     func muteAudio() {
@@ -288,8 +307,7 @@ extension WebRTCClient {
     }
     
     private func setAudioEnabled(_ isEnabled: Bool) {
-        let audioTracks = self.peerConnection.transceivers.compactMap { return $0.sender.track as? RTCAudioTrack }
-        audioTracks.forEach { $0.isEnabled = isEnabled }
+        setTrackEnabled(RTCAudioTrack.self, isEnabled: isEnabled)
     }
 }
 
