@@ -1,15 +1,22 @@
 {
-  "name": "signaling",
+  "name": "webrtc-signaling",
   "version": "1.0.0",
-  "description": "",
+  "description": "Signaling WebRTC server",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "start": "node app.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Mikhail Kouznetsov",
+  "license": "MIT",
   "dependencies": {
     "npm": "^6.0.1",
     "ws": "^5.1.1"
+  },
+  "keywords": [
+    "WebRTC",
+    "heroku"
+  ],
+  "engines": {
+    "node": "14.x"
   }
 }
