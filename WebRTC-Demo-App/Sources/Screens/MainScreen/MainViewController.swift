@@ -186,9 +186,10 @@ extension MainViewController: SignalClientDelegate {
     }
     
     func signalClient(_ signalClient: SignalingClient, didReceiveCandidate candidate: RTCIceCandidate) {
-        print("Received remote candidate")
-        self.remoteCandidateCount += 1
-        self.webRTCClient.set(remoteCandidate: candidate)
+        self.webRTCClient.set(remoteCandidate: candidate) { error in
+            print("Received remote candidate")
+            self.remoteCandidateCount += 1
+        }
     }
 }
 
