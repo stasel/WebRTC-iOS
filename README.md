@@ -9,7 +9,7 @@ This demo app's purpose is to demonstrate the bare minimum required to establish
 
 ## Requirements
 1. Xcode 12.1 or later
-2. iOS 10 or later
+2. iOS 12 or later
 3. Node.js + npm (For NodeJS Signaling server)  
 **- OR -**  
 macOS 10.15 (For Swift signaling server)

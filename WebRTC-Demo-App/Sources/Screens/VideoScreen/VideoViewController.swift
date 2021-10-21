@@ -27,17 +27,11 @@ class VideoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        #if arch(arm64)
-            // Using metal (arm64 only)
-            let localRenderer = RTCMTLVideoView(frame: self.localVideoView?.frame ?? CGRect.zero)
-            let remoteRenderer = RTCMTLVideoView(frame: self.view.frame)
-            localRenderer.videoContentMode = .scaleAspectFill
-            remoteRenderer.videoContentMode = .scaleAspectFill
-        #else
-            // Using OpenGLES for the rest
-            let localRenderer = RTCEAGLVideoView(frame: self.localVideoView?.frame ?? CGRect.zero)
-            let remoteRenderer = RTCEAGLVideoView(frame: self.view.frame)
-        #endif
+        let localRenderer = RTCMTLVideoView(frame: self.localVideoView?.frame ?? CGRect.zero)
+        let remoteRenderer = RTCMTLVideoView(frame: self.view.frame)
+        localRenderer.videoContentMode = .scaleAspectFill
+        remoteRenderer.videoContentMode = .scaleAspectFill
+        
 
         self.webRTCClient.startCaptureLocalVideo(renderer: localRenderer)
         self.webRTCClient.renderRemoteVideo(to: remoteRenderer)

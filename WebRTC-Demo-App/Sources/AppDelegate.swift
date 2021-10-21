@@ -29,12 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let signalClient = self.buildSignalingClient()
         let mainViewController = MainViewController(signalClient: signalClient, webRTCClient: webRTCClient)
         let navViewController = UINavigationController(rootViewController: mainViewController)
-        if #available(iOS 11.0, *) {
-            navViewController.navigationBar.prefersLargeTitles = true
-        }
-        else {
-            navViewController.navigationBar.isTranslucent = false
-        }
+        navViewController.navigationBar.prefersLargeTitles = true
         return navViewController
     }
     

@@ -179,7 +179,7 @@ final class WebRTCClient: NSObject {
     private func createVideoTrack() -> RTCVideoTrack {
         let videoSource = WebRTCClient.factory.videoSource()
         
-        #if TARGET_OS_SIMULATOR
+        #if targetEnvironment(simulator)
         self.videoCapturer = RTCFileVideoCapturer(delegate: videoSource)
         #else
         self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
