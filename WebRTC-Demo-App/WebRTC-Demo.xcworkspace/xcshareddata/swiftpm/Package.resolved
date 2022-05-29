@@ -1,34 +1,32 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Starscream",
-        "repositoryURL": "https://github.com/daltoniam/Starscream.git",
-        "state": {
-          "branch": null,
-          "revision": "e6b65c6d9077ea48b4a7bdda8994a1d3c6969c8d",
-          "version": "3.1.1"
-        }
-      },
-      {
-        "package": "swift-nio-zlib-support",
-        "repositoryURL": "https://github.com/apple/swift-nio-zlib-support.git",
-        "state": {
-          "branch": null,
-          "revision": "37760e9a52030bb9011972c5213c3350fa9d41fd",
-          "version": "1.0.0"
-        }
-      },
-      {
-        "package": "WebRTC",
-        "repositoryURL": "https://github.com/stasel/WebRTC",
-        "state": {
-          "branch": null,
-          "revision": "0f5f7b40b7fa53ad46ccece1665dbca3897df766",
-          "version": "96.0.0"
-        }
+  "pins" : [
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "revision" : "e6b65c6d9077ea48b4a7bdda8994a1d3c6969c8d",
+        "version" : "3.1.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "swift-nio-zlib-support",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-zlib-support.git",
+      "state" : {
+        "revision" : "37760e9a52030bb9011972c5213c3350fa9d41fd",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "webrtc",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stasel/WebRTC",
+      "state" : {
+        "revision" : "69f918ddd8606b7f745fb19aaa401fce6005a882",
+        "version" : "102.0.0"
+      }
+    }
+  ],
+  "version" : 2
 }
