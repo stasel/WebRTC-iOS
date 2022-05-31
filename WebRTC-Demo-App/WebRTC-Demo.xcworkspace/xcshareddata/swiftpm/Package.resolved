@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stasel/WebRTC",
       "state" : {
-        "revision" : "69f918ddd8606b7f745fb19aaa401fce6005a882",
-        "version" : "102.0.0"
+        "revision" : "0f5f7b40b7fa53ad46ccece1665dbca3897df766",
+        "version" : "96.0.0"
       }
     }
   ],
