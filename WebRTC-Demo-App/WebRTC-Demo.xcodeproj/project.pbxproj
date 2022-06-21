@@ -304,7 +304,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -367,7 +367,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -460,7 +460,7 @@
 			repositoryURL = "https://github.com/stasel/WebRTC";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 96.0.0;
+				minimumVersion = 103.0.0;
 			};
 		};
 		2F8A9D1D24FA64E700CAECD1 /* XCRemoteSwiftPackageReference "Starscream" */ = {
