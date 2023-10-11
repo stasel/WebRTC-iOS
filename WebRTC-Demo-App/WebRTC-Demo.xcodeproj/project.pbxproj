@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -461,7 +461,7 @@
 			repositoryURL = "https://github.com/stasel/WebRTC";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 115.0.0;
+				minimumVersion = 118.0.0;
 			};
 		};
 		2F2E228628E81A080026A8B5 /* XCRemoteSwiftPackageReference "Starscream" */ = {
