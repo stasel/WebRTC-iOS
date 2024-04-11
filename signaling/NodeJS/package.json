@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "npm": "^9.8.1",
+    "npm": "^10.5.2",
     "ws": "^7.4.6"
   }
 }
