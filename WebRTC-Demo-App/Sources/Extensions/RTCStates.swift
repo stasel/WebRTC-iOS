@@ -9,8 +9,8 @@
 import Foundation
 import WebRTC
 
-extension RTCIceConnectionState: CustomStringConvertible {
-    public var description: String {
+extension RTCIceConnectionState {
+    var description: String {
         switch self {
         case .new:          return "new"
         case .checking:     return "checking"
@@ -24,9 +24,8 @@ extension RTCIceConnectionState: CustomStringConvertible {
         }
     }
 }
-
-extension RTCSignalingState: CustomStringConvertible {
-    public var description: String {
+extension RTCSignalingState {
+    var stringValue: String {
         switch self {
         case .stable:               return "stable"
         case .haveLocalOffer:       return "haveLocalOffer"
@@ -34,13 +33,13 @@ extension RTCSignalingState: CustomStringConvertible {
         case .haveRemoteOffer:      return "haveRemoteOffer"
         case .haveRemotePrAnswer:   return "haveRemotePrAnswer"
         case .closed:               return "closed"
-        @unknown default:   return "Unknown \(self.rawValue)"
+        @unknown default:           return "Unknown \(self.rawValue)"
         }
     }
 }
 
-extension RTCIceGatheringState: CustomStringConvertible {
-    public var description: String {
+extension RTCIceGatheringState {
+    var stringValue: String {
         switch self {
         case .new:          return "new"
         case .gathering:    return "gathering"
@@ -50,8 +49,8 @@ extension RTCIceGatheringState: CustomStringConvertible {
     }
 }
 
-extension RTCDataChannelState: CustomStringConvertible {
-    public var description: String {
+extension RTCDataChannelState {
+    var stringValue: String {
         switch self {
         case .connecting:   return "connecting"
         case .open:         return "open"
@@ -61,4 +60,3 @@ extension RTCDataChannelState: CustomStringConvertible {
         }
     }
 }
-
