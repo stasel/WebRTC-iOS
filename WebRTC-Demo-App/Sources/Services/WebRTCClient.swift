@@ -1,328 +1,249 @@
-//
-//  WebRTCClient.swift
-//  WebRTC
-//
-//  Created by Stasel on 20/05/2018.
-//  Copyright © 2018 Stasel. All rights reserved.
-//
-
 import Foundation
 import WebRTC
+import AVFoundation
 
 protocol WebRTCClientDelegate: AnyObject {
-    func webRTCClient(_ client: WebRTCClient, didDiscoverLocalCandidate candidate: RTCIceCandidate)
-    func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState)
-    func webRTCClient(_ client: WebRTCClient, didReceiveData data: Data)
+    func webRTCDidChangeConnectionState(_ state: RTCPeerConnectionState)
+    func webRTC(didAddRemoteStream stream: RTCMediaStream)
+    func webRTC(didReceiveCandidate candidate: RTCIceCandidate)
 }
 
 final class WebRTCClient: NSObject {
-    
-    // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
-    // A new RTCPeerConnection should be created every new call, but the factory is shared.
-    private static let factory: RTCPeerConnectionFactory = {
-        RTCInitializeSSL()
-        let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
-        let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
-        return RTCPeerConnectionFactory(encoderFactory: videoEncoderFactory, decoderFactory: videoDecoderFactory)
-    }()
-    
-    weak var delegate: WebRTCClientDelegate?
-    private let peerConnection: RTCPeerConnection
-    private let rtcAudioSession =  RTCAudioSession.sharedInstance()
-    private let audioQueue = DispatchQueue(label: "audio")
-    private let mediaConstrains = [kRTCMediaConstraintsOfferToReceiveAudio: kRTCMediaConstraintsValueTrue,
-                                   kRTCMediaConstraintsOfferToReceiveVideo: kRTCMediaConstraintsValueTrue]    
-    private var videoCapturer: RTCVideoCapturer?
+    private let factory: RTCPeerConnectionFactory
+    private let pc: RTCPeerConnection
+    private var localAudioTrack: RTCAudioTrack?
+    private var localVideoSource: RTCVideoSource?
     private var localVideoTrack: RTCVideoTrack?
-    private var remoteVideoTrack: RTCVideoTrack?
-    private var localDataChannel: RTCDataChannel?
-    private var remoteDataChannel: RTCDataChannel?
+    private var capturer: RTCCameraVideoCapturer?
+    weak var delegate: WebRTCClientDelegate?
+    private weak var remoteRenderer: RTCVideoRenderer?
 
-    @available(*, unavailable)
-    override init() {
-        fatalError("WebRTCClient:init is unavailable")
-    }
-    
-    required init(iceServers: [String]) {
+    init(iceServers: [String] = ["stun:stun.l.google.com:19302"]) {
+        RTCInitializeSSL()
+        let enc = RTCDefaultVideoEncoderFactory()
+        let dec = RTCDefaultVideoDecoderFactory()
+        self.factory = RTCPeerConnectionFactory(encoderFactory: enc, decoderFactory: dec)
+
         let config = RTCConfiguration()
-        config.iceServers = [RTCIceServer(urlStrings: iceServers)]
-        
-        // Unified plan is more superior than planB
+        config.iceServers = iceServers.map { RTCIceServer(urlStrings: [$0]) }
         config.sdpSemantics = .unifiedPlan
-        
-        // gatherContinually will let WebRTC to listen to any network changes and send any new candidates to the other client
         config.continualGatheringPolicy = .gatherContinually
-        
-        // Define media constraints. DtlsSrtpKeyAgreement is required to be true to be able to connect with web browsers.
+
         let constraints = RTCMediaConstraints(mandatoryConstraints: nil,
-                                              optionalConstraints: ["DtlsSrtpKeyAgreement":kRTCMediaConstraintsValueTrue])
+                                              optionalConstraints: ["DtlsSrtpKeyAgreement":"true"])
         
-        guard let peerConnection = WebRTCClient.factory.peerConnection(with: config, constraints: constraints, delegate: nil) else {
-            fatalError("Could not create new RTCPeerConnection")
+        guard let pc = factory.peerConnection(with: config, constraints: constraints, delegate: nil) else {
+            fatalError("Failed to create RTCPeerConnection")
         }
-        
-        self.peerConnection = peerConnection
+        self.pc = pc
         
         super.init()
-        self.createMediaSenders()
-        self.configureAudioSession()
-        self.peerConnection.delegate = self
+        pc.delegate = self
+        setupTransceivers()
     }
-    
-    // MARK: Signaling
-    func offer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void) {
-        let constrains = RTCMediaConstraints(mandatoryConstraints: self.mediaConstrains,
-                                             optionalConstraints: nil)
-        self.peerConnection.offer(for: constrains) { (sdp, error) in
-            guard let sdp = sdp else {
-                return
-            }
-            
-            self.peerConnection.setLocalDescription(sdp, completionHandler: { (error) in
-                completion(sdp)
-            })
-        }
-    }
-    
-    func answer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void)  {
-        let constrains = RTCMediaConstraints(mandatoryConstraints: self.mediaConstrains,
-                                             optionalConstraints: nil)
-        self.peerConnection.answer(for: constrains) { (sdp, error) in
-            guard let sdp = sdp else {
-                return
-            }
-            
-            self.peerConnection.setLocalDescription(sdp, completionHandler: { (error) in
-                completion(sdp)
-            })
-        }
-    }
-    
-    func set(remoteSdp: RTCSessionDescription, completion: @escaping (Error?) -> ()) {
-        self.peerConnection.setRemoteDescription(remoteSdp, completionHandler: completion)
-    }
-    
-    func set(remoteCandidate: RTCIceCandidate, completion: @escaping (Error?) -> ()) {
-        self.peerConnection.add(remoteCandidate, completionHandler: completion)
-    }
-    
-    // MARK: Media
-    func startCaptureLocalVideo(renderer: RTCVideoRenderer) {
-        guard let capturer = self.videoCapturer as? RTCCameraVideoCapturer else {
-            return
-        }
 
-        guard
-            let frontCamera = (RTCCameraVideoCapturer.captureDevices().first { $0.position == .front }),
-        
-            // choose highest res
-            let format = (RTCCameraVideoCapturer.supportedFormats(for: frontCamera).sorted { (f1, f2) -> Bool in
-                let width1 = CMVideoFormatDescriptionGetDimensions(f1.formatDescription).width
-                let width2 = CMVideoFormatDescriptionGetDimensions(f2.formatDescription).width
-                return width1 < width2
-            }).last,
-        
-            // choose highest fps
-            let fps = (format.videoSupportedFrameRateRanges.sorted { return $0.maxFrameRate < $1.maxFrameRate }.last) else {
-            return
+    func close() {
+        if let renderer = remoteRenderer {
+            // if you kept a reference to the current remote track, remove it:
+            // currentRemoteVideoTrack?.remove(renderer)
         }
+        pc.close()
+        RTCCleanupSSL()
+    }
 
-        capturer.startCapture(with: frontCamera,
-                              format: format,
-                              fps: Int(fps.maxFrameRate))
-        
-        self.localVideoTrack?.add(renderer)
-    }
-    
-    func renderRemoteVideo(to renderer: RTCVideoRenderer) {
-        self.remoteVideoTrack?.add(renderer)
-    }
-    
-    private func configureAudioSession() {
-        self.rtcAudioSession.lockForConfiguration()
-        do {
-            try self.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord)
-            try self.rtcAudioSession.setMode(AVAudioSession.Mode.voiceChat)
-        } catch let error {
-            debugPrint("Error changeing AVAudioSession category: \(error)")
-        }
-        self.rtcAudioSession.unlockForConfiguration()
-    }
-    
-    private func createMediaSenders() {
-        let streamId = "stream"
-        
+    private func setupTransceivers() {
         // Audio
-        let audioTrack = self.createAudioTrack()
-        self.peerConnection.add(audioTrack, streamIds: [streamId])
-        
-        // Video
-        let videoTrack = self.createVideoTrack()
-        self.localVideoTrack = videoTrack
-        self.peerConnection.add(videoTrack, streamIds: [streamId])
-        self.remoteVideoTrack = self.peerConnection.transceivers.first { $0.mediaType == .video }?.receiver.track as? RTCVideoTrack
-        
-        // Data
-        if let dataChannel = createDataChannel() {
-            dataChannel.delegate = self
-            self.localDataChannel = dataChannel
+        let audioSource = factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil))
+        let track = factory.audioTrack(with: audioSource, trackId: "audio0")
+        localAudioTrack = track
+        _ = pc.add(track, streamIds: ["stream0"])
+
+        // Prepare a recvonly video transceiver (remote video even if camera off)
+        _ = pc.addTransceiver(of: .video)
+    }
+
+    // MARK: Camera
+    func startCapture(in view: RTCMTLVideoView, position: AVCaptureDevice.Position = .front) {
+        if capturer == nil {
+            localVideoSource = factory.videoSource()
+            capturer = RTCCameraVideoCapturer(delegate: localVideoSource!)
+            localVideoTrack = factory.videoTrack(with: localVideoSource!, trackId: "video0")
+            _ = pc.add(localVideoTrack!, streamIds: ["stream0"])
+        }
+
+        view.videoContentMode = .scaleAspectFit
+        localVideoTrack?.add(view) // keep a weak ref to view if you want to remove it later
+
+        guard let device = RTCCameraVideoCapturer.captureDevices().first(where: { $0.position == position }) else { return }
+        let formats = RTCCameraVideoCapturer.supportedFormats(for: device)
+        guard let format = formats.sorted(by: {
+            let w0 = CMVideoFormatDescriptionGetDimensions($0.formatDescription).width
+            let w1 = CMVideoFormatDescriptionGetDimensions($1.formatDescription).width
+            return w0 < w1
+        }).last else { return }
+
+        let maxFps = Int(format.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 30)
+        capturer?.startCapture(with: device, format: format, fps: min(maxFps, 30))
+    }
+
+    func stopCapture() {
+        // 1) Stop the camera
+        guard let capturer = self.capturer else { return }
+        capturer.stopCapture { [weak self] in
+            guard let self = self else { return }
+
+            // 2) Remove the local video track from the peer connection
+            if let localVideoTrack = self.localVideoTrack {
+                if let sender = self.pc.senders.first(where: { $0.track == localVideoTrack }) {
+                    self.pc.removeTrack(sender)
+                }
+                // (Optional) If you kept a reference to the local preview view:
+                // localVideoTrack.remove(self.localRenderView)
+            }
+
+            // 3) Clear references
+            self.localVideoTrack = nil
+            self.localVideoSource = nil
+            self.capturer = nil
         }
     }
-    
-    private func createAudioTrack() -> RTCAudioTrack {
-        let audioConstrains = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
-        let audioSource = WebRTCClient.factory.audioSource(with: audioConstrains)
-        let audioTrack = WebRTCClient.factory.audioTrack(with: audioSource, trackId: "audio0")
-        return audioTrack
-    }
-    
-    private func createVideoTrack() -> RTCVideoTrack {
-        let videoSource = WebRTCClient.factory.videoSource()
-        
-        #if targetEnvironment(simulator)
-        self.videoCapturer = RTCFileVideoCapturer(delegate: videoSource)
-        #else
-        self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
-        #endif
-        
-        let videoTrack = WebRTCClient.factory.videoTrack(with: videoSource, trackId: "video0")
-        return videoTrack
-    }
-    
-    // MARK: Data Channels
-    private func createDataChannel() -> RTCDataChannel? {
-        let config = RTCDataChannelConfiguration()
-        guard let dataChannel = self.peerConnection.dataChannel(forLabel: "WebRTCData", configuration: config) else {
-            debugPrint("Warning: Couldn't create data channel.")
-            return nil
+
+    // MARK: Offer/Answer
+    func makeOffer(completion: @escaping (RTCSessionDescription) -> Void) {
+        let cons = RTCMediaConstraints(mandatoryConstraints: ["OfferToReceiveAudio":"true","OfferToReceiveVideo":"true"],
+                                       optionalConstraints: nil)
+        pc.offer(for: cons) { [weak self] sdp, err in
+            guard let self, let sdp else { return }
+            self.pc.setLocalDescription(sdp) { _ in completion(sdp) }
         }
-        return dataChannel
     }
-    
-    func sendData(_ data: Data) {
-        let buffer = RTCDataBuffer(data: data, isBinary: true)
-        self.remoteDataChannel?.sendData(buffer)
+
+    func applyAnswer(_ sdp: RTCSessionDescription, completion: @escaping () -> Void) {
+        pc.setRemoteDescription(sdp) { error in
+            if let error = error {
+                print("Failed to set remote description: \(error)")
+            }
+            completion()
+        }
+    }
+
+    func applyRemoteOffer(
+        _ sdp: RTCSessionDescription,
+        answer: @escaping (RTCSessionDescription) -> Void
+    ) {
+        pc.setRemoteDescription(sdp) { [weak self] error in
+            guard let self else { return }
+            if let error = error {
+                print("Failed to set remote description: \(error)")
+                return
+            }
+
+            let cons = RTCMediaConstraints(
+                mandatoryConstraints: [
+                    "OfferToReceiveAudio": "true",
+                    "OfferToReceiveVideo": "true"
+                ],
+                optionalConstraints: nil
+            )
+
+            self.pc.answer(for: cons) { sdp, _ in
+                guard let sdp else { return }
+                self.pc.setLocalDescription(sdp) { _ in
+                    answer(sdp)
+                }
+            }
+        }
+    }
+
+    // MARK: ICE
+    func addIceCandidate(_ candidate: RTCIceCandidate) {
+        pc.add(candidate) { error in
+            if let error = error {
+                print("❌ Failed to add ICE candidate: \(error)")
+            } else {
+                print("✅ ICE candidate added successfully")
+            }
+        }
+    }
+
+    // Expose local/remote rendering hookup
+    func attachRemote(to view: RTCMTLVideoView) {
+        view.videoContentMode = .scaleAspectFit
+        remoteRenderer = view
     }
 }
+
+/// Simple adapter so we can attach RTCMTLVideoView as the remote renderer
+final class RTCVideoRendererAdapter: NSObject, RTCVideoRenderer {
+    private weak var view: RTCMTLVideoView?
+    init(_ view: RTCMTLVideoView) { self.view = view }
+    func setSize(_ size: CGSize) { /* RTCMTLVideoView handles internally */ }
+    func renderFrame(_ frame: RTCVideoFrame?) { view?.renderFrame(frame) }
+}
+
 
 extension WebRTCClient: RTCPeerConnectionDelegate {
-    
-    func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        debugPrint("peerConnection new signaling state: \(stateChanged)")
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didChange stateChanged: RTCPeerConnectionState) {
+        print("Peer connection state changed: \(stateChanged)")
+        
+        delegate?.webRTCDidChangeConnectionState(stateChanged)
     }
-    
-    func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        debugPrint("peerConnection did add stream")
+
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didAdd stream: RTCMediaStream) {
+        print("Did add stream: \(stream.streamId)")
     }
-    
-    func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        debugPrint("peerConnection did remove stream")
+
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didRemove stream: RTCMediaStream) {
+        print("Did remove stream: \(stream.streamId)")
     }
-    
+
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
-        debugPrint("peerConnection should negotiate")
+        print("Should negotiate")
     }
-    
-    func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        debugPrint("peerConnection new connection state: \(newState)")
-        self.delegate?.webRTCClient(self, didChangeConnectionState: newState)
-    }
-    
-    func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        debugPrint("peerConnection new gathering state: \(newState)")
-    }
-    
-    func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
-        self.delegate?.webRTCClient(self, didDiscoverLocalCandidate: candidate)
-    }
-    
-    func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
-        debugPrint("peerConnection did remove candidate(s)")
-    }
-    
-    func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        debugPrint("peerConnection did open data channel")
-        self.remoteDataChannel = dataChannel
-    }
-}
-extension WebRTCClient {
-    private func setTrackEnabled<T: RTCMediaStreamTrack>(_ type: T.Type, isEnabled: Bool) {
-        peerConnection.transceivers
-            .compactMap { return $0.sender.track as? T }
-            .forEach { $0.isEnabled = isEnabled }
-    }
-}
 
-// MARK: - Video control
-extension WebRTCClient {
-    func hideVideo() {
-        self.setVideoEnabled(false)
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didChange newState: RTCSignalingState) {
+        print("Signaling state changed: \(newState.rawValue)")
     }
-    func showVideo() {
-        self.setVideoEnabled(true)
-    }
-    private func setVideoEnabled(_ isEnabled: Bool) {
-        setTrackEnabled(RTCVideoTrack.self, isEnabled: isEnabled)
-    }
-}
-// MARK:- Audio control
-extension WebRTCClient {
-    func muteAudio() {
-        self.setAudioEnabled(false)
-    }
-    
-    func unmuteAudio() {
-        self.setAudioEnabled(true)
-    }
-    
-    // Fallback to the default playing device: headphones/bluetooth/ear speaker
-    func speakerOff() {
-        self.audioQueue.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.rtcAudioSession.lockForConfiguration()
-            do {
-                try self.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord)
-                try self.rtcAudioSession.overrideOutputAudioPort(.none)
-            } catch let error {
-                debugPrint("Error setting AVAudioSession category: \(error)")
-            }
-            self.rtcAudioSession.unlockForConfiguration()
-        }
-    }
-    
-    // Force speaker
-    func speakerOn() {
-        self.audioQueue.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.rtcAudioSession.lockForConfiguration()
-            do {
-                try self.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord)
-                try self.rtcAudioSession.overrideOutputAudioPort(.speaker)
-                try self.rtcAudioSession.setActive(true)
-            } catch let error {
-                debugPrint("Couldn't force audio to speaker: \(error)")
-            }
-            self.rtcAudioSession.unlockForConfiguration()
-        }
-    }
-    
-    private func setAudioEnabled(_ isEnabled: Bool) {
-        setTrackEnabled(RTCAudioTrack.self, isEnabled: isEnabled)
-    }
-}
 
-extension WebRTCClient: RTCDataChannelDelegate {
-    func dataChannelDidChangeState(_ dataChannel: RTCDataChannel) {
-        debugPrint("dataChannel did change state: \(dataChannel.readyState)")
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didGenerate candidate: RTCIceCandidate) {
+        print("Generated ICE candidate: \(candidate.sdpMid ?? "")")
+        
+        delegate?.webRTC(didReceiveCandidate: candidate)
     }
-    
-    func dataChannel(_ dataChannel: RTCDataChannel, didReceiveMessageWith buffer: RTCDataBuffer) {
-        self.delegate?.webRTCClient(self, didReceiveData: buffer.data)
+
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didRemove candidates: [RTCIceCandidate]) {
+        print("Removed ICE candidates: \(candidates.count)")
+    }
+
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didOpen dataChannel: RTCDataChannel) {
+        print("Data channel opened: \(dataChannel.label)")
+    }
+
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didChange localCandidate: RTCIceConnectionState) {
+        print("ICE connection state changed: \(localCandidate)")
+    }
+
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didChange newState: RTCIceGatheringState) {
+        print("ICE gathering state changed: \(newState)")
+    }
+
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didAdd rtpReceiver: RTCRtpReceiver,
+                        streams: [RTCMediaStream]) {
+        print("Did add RTP receiver: \(rtpReceiver)")
+        
+        if let track = rtpReceiver.track as? RTCVideoTrack,
+           let renderer = remoteRenderer {
+            track.add(renderer)
+        }
     }
 }

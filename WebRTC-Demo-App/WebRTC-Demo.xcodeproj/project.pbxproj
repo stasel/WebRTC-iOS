@@ -12,6 +12,10 @@
 		2F7EBC3622DCC6430015B46E /* WebSocketProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7EBC3522DCC6430015B46E /* WebSocketProvider.swift */; };
 		2F7EBC3822DCCB4E0015B46E /* StarscreamProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7EBC3722DCCB4E0015B46E /* StarscreamProvider.swift */; };
 		2F7EBC3A22DCCE240015B46E /* NativeWebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7EBC3922DCCE240015B46E /* NativeWebSocket.swift */; };
+		466AE3E32E9AEF4E00C0A71A /* RoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466AE3E22E9AEF4300C0A71A /* RoomsViewController.swift */; };
+		466AE3E52E9AFE7F00C0A71A /* RoomScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466AE3E42E9AFE7B00C0A71A /* RoomScreen.swift */; };
+		466AE3E72E9AFEBC00C0A71A /* RoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 466AE3E62E9AFEB400C0A71A /* RoomViewModel.swift */; };
+		466AE3EF2E9B019100C0A71A /* RoomsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 466AE3EE2E9B019100C0A71A /* RoomsViewController.storyboard */; };
 		79177C9720B0DE7A00BCD399 /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177C9620B0DE7A00BCD399 /* WebRTCClient.swift */; };
 		79177C9920B0DF2700BCD399 /* SignalingClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177C9820B0DF2700BCD399 /* SignalingClient.swift */; };
 		79177CA620B1F76E00BCD399 /* RTCStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79177CA520B1F76E00BCD399 /* RTCStates.swift */; };
@@ -33,6 +37,10 @@
 		2F7EBC3522DCC6430015B46E /* WebSocketProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketProvider.swift; sourceTree = "<group>"; };
 		2F7EBC3722DCCB4E0015B46E /* StarscreamProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarscreamProvider.swift; sourceTree = "<group>"; };
 		2F7EBC3922DCCE240015B46E /* NativeWebSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeWebSocket.swift; sourceTree = "<group>"; };
+		466AE3E22E9AEF4300C0A71A /* RoomsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsViewController.swift; sourceTree = "<group>"; };
+		466AE3E42E9AFE7B00C0A71A /* RoomScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomScreen.swift; sourceTree = "<group>"; };
+		466AE3E62E9AFEB400C0A71A /* RoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomViewModel.swift; sourceTree = "<group>"; };
+		466AE3EE2E9B019100C0A71A /* RoomsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RoomsViewController.storyboard; sourceTree = "<group>"; };
 		79177C9620B0DE7A00BCD399 /* WebRTCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCClient.swift; sourceTree = "<group>"; };
 		79177C9820B0DF2700BCD399 /* SignalingClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalingClient.swift; sourceTree = "<group>"; };
 		79177CA520B1F76E00BCD399 /* RTCStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCStates.swift; sourceTree = "<group>"; };
@@ -153,8 +161,12 @@
 		798FBA442200F510009F525E /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				466AE3E62E9AFEB400C0A71A /* RoomViewModel.swift */,
+				466AE3E42E9AFE7B00C0A71A /* RoomScreen.swift */,
+				466AE3E22E9AEF4300C0A71A /* RoomsViewController.swift */,
 				7921989F220107C90051F03F /* MainScreen */,
 				792198A0220107E30051F03F /* VideoScreen */,
+				466AE3EE2E9B019100C0A71A /* RoomsViewController.storyboard */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -240,6 +252,7 @@
 			files = (
 				79262EEE20B0D6F800D576C1 /* Assets.xcassets in Resources */,
 				798FBA472200F681009F525E /* MainViewController.xib in Resources */,
+				466AE3EF2E9B019100C0A71A /* RoomsViewController.storyboard in Resources */,
 				79177CAA20B2283F00BCD399 /* VideoViewController.xib in Resources */,
 				798FBA492200F9A9009F525E /* LaunchScreen.storyboard in Resources */,
 			);
@@ -255,14 +268,17 @@
 				79262EE920B0D6F600D576C1 /* MainViewController.swift in Sources */,
 				792198A222011A450051F03F /* Config.swift in Sources */,
 				79177CA820B2276400BCD399 /* VideoViewController.swift in Sources */,
+				466AE3E32E9AEF4E00C0A71A /* RoomsViewController.swift in Sources */,
 				79262EE720B0D6F600D576C1 /* AppDelegate.swift in Sources */,
 				795A4A26221E081A00F8BB03 /* SessionDescription.swift in Sources */,
 				79177CA620B1F76E00BCD399 /* RTCStates.swift in Sources */,
+				466AE3E72E9AFEBC00C0A71A /* RoomViewModel.swift in Sources */,
 				79177C9920B0DF2700BCD399 /* SignalingClient.swift in Sources */,
 				795A4A2A221E0FB100F8BB03 /* Message.swift in Sources */,
 				795A4A28221E0A1B00F8BB03 /* IceCandidate.swift in Sources */,
 				2F7EBC3622DCC6430015B46E /* WebSocketProvider.swift in Sources */,
 				79177C9720B0DE7A00BCD399 /* WebRTCClient.swift in Sources */,
+				466AE3E52E9AFE7F00C0A71A /* RoomScreen.swift in Sources */,
 				2F7EBC3822DCCB4E0015B46E /* StarscreamProvider.swift in Sources */,
 				2F7EBC3A22DCCE240015B46E /* NativeWebSocket.swift in Sources */,
 			);
@@ -397,14 +413,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = J5HXNWPVL8;
+				DEVELOPMENT_TEAM = SC7488M9S2;
 				INFOPLIST_FILE = "$(SRCROOT)/SupportingFiles/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.stasel.WebRTC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chchench.WebRTC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -419,14 +435,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = J5HXNWPVL8;
+				DEVELOPMENT_TEAM = SC7488M9S2;
 				INFOPLIST_FILE = "$(SRCROOT)/SupportingFiles/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.stasel.WebRTC;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chchench.WebRTC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
