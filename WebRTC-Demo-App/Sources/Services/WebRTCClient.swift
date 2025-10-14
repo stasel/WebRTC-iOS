@@ -17,9 +17,12 @@ final class WebRTCClient: NSObject {
     private var capturer: RTCCameraVideoCapturer?
     weak var delegate: WebRTCClientDelegate?
     private weak var remoteRenderer: RTCVideoRenderer?
+    private var currentRemoteVideoTrack: RTCVideoTrack?
+
 
     init(iceServers: [String] = ["stun:stun.l.google.com:19302"]) {
-        RTCInitializeSSL()
+        // RTCInitializeSSL()
+        
         let enc = RTCDefaultVideoEncoderFactory()
         let dec = RTCDefaultVideoDecoderFactory()
         self.factory = RTCPeerConnectionFactory(encoderFactory: enc, decoderFactory: dec)
@@ -38,17 +41,33 @@ final class WebRTCClient: NSObject {
         self.pc = pc
         
         super.init()
+        
+        configureAudioSession()
         pc.delegate = self
         setupTransceivers()
     }
 
     func close() {
-        if let renderer = remoteRenderer {
+        if let _ = remoteRenderer {
             // if you kept a reference to the current remote track, remove it:
             // currentRemoteVideoTrack?.remove(renderer)
         }
         pc.close()
-        RTCCleanupSSL()
+        
+        // RTCCleanupSSL()
+    }
+    
+    private func configureAudioSession() {
+        let session = AVAudioSession.sharedInstance()
+        do {
+            try session.setCategory(.playAndRecord,
+                                    mode: .videoChat,
+                                    options: [.defaultToSpeaker, .allowBluetooth])
+            try session.setActive(true)
+            print("✅ AVAudioSession configured for video chat")
+        } catch {
+            print("❌ Failed to configure AVAudioSession: \(error)")
+        }
     }
 
     private func setupTransceivers() {
@@ -63,6 +82,11 @@ final class WebRTCClient: NSObject {
     }
 
     // MARK: Camera
+    
+    var isCapturing: Bool {
+        capturer != nil
+    }
+    
     func startCapture(in view: RTCMTLVideoView, position: AVCaptureDevice.Position = .front) {
         if capturer == nil {
             localVideoSource = factory.videoSource()
@@ -94,11 +118,10 @@ final class WebRTCClient: NSObject {
 
             // 2) Remove the local video track from the peer connection
             if let localVideoTrack = self.localVideoTrack {
+                // TODO: localVideoTrack.remove(self.localRenderView)
                 if let sender = self.pc.senders.first(where: { $0.track == localVideoTrack }) {
                     self.pc.removeTrack(sender)
                 }
-                // (Optional) If you kept a reference to the local preview view:
-                // localVideoTrack.remove(self.localRenderView)
             }
 
             // 3) Clear references
@@ -114,6 +137,7 @@ final class WebRTCClient: NSObject {
                                        optionalConstraints: nil)
         pc.offer(for: cons) { [weak self] sdp, err in
             guard let self, let sdp else { return }
+            if let err { print("offer error:", err); return }
             self.pc.setLocalDescription(sdp) { _ in completion(sdp) }
         }
     }
@@ -170,6 +194,10 @@ final class WebRTCClient: NSObject {
     func attachRemote(to view: RTCMTLVideoView) {
         view.videoContentMode = .scaleAspectFit
         remoteRenderer = view
+        
+        if let track = currentRemoteVideoTrack {
+            track.add(view)
+        }
     }
 }
 
@@ -193,6 +221,7 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     func peerConnection(_ peerConnection: RTCPeerConnection,
                         didAdd stream: RTCMediaStream) {
         print("Did add stream: \(stream.streamId)")
+        delegate?.webRTC(didAddRemoteStream: stream)   // Notify RoomsViewModel
     }
 
     func peerConnection(_ peerConnection: RTCPeerConnection,
@@ -241,9 +270,11 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
                         streams: [RTCMediaStream]) {
         print("Did add RTP receiver: \(rtpReceiver)")
         
-        if let track = rtpReceiver.track as? RTCVideoTrack,
-           let renderer = remoteRenderer {
-            track.add(renderer)
+        if let track = rtpReceiver.track as? RTCVideoTrack {
+            currentRemoteVideoTrack = track
+            if let renderer = remoteRenderer {
+                track.add(renderer)
+            }
         }
     }
 }

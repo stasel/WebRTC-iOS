@@ -1,26 +1,24 @@
-//
-//  Config.swift
-//  WebRTC-Demo
-//
-//  Created by Stasel on 30/01/2019.
-//  Copyright © 2019 Stasel. All rights reserved.
-//
-
 import Foundation
 
-// Set this to the machine's address which runs the signaling server. Do not use 'localhost' or '127.0.0.1'
-fileprivate let defaultSignalingServerUrl = URL(string: <#"ws://localhost:8080"#>)!
-
-// We use Google's public stun servers. For production apps you should deploy your own stun/turn servers.
-fileprivate let defaultIceServers = ["stun:stun.l.google.com:19302",
-                                     "stun:stun1.l.google.com:19302",
-                                     "stun:stun2.l.google.com:19302",
-                                     "stun:stun3.l.google.com:19302",
-                                     "stun:stun4.l.google.com:19302"]
+enum Role: String, CaseIterable {
+    case stage
+    case viewer // "client" normalizes to viewer on the server
+}
 
 struct Config {
-    let signalingServerUrl: URL
-    let webRTCIceServers: [String]
-    
-    static let `default` = Config(signalingServerUrl: defaultSignalingServerUrl, webRTCIceServers: defaultIceServers)
+    static let signalingHost = "signaling.fideliodesign.com"
+    static let defaultRoomId = "euterpe"
+    static let defaultPeerId = "ios-client"
+    static let apiKey: String? = "supersecret123" // set if your server runs in APIKEY mode
+
+    static func wsURL(roomId: String, peerId: String) -> URL {
+        var comps = URLComponents()
+        comps.scheme = "wss"
+        comps.host = signalingHost
+        comps.path = "/ws/\(roomId)/\(peerId)"
+        var query: [URLQueryItem] = []
+        if let apiKey { query.append(URLQueryItem(name: "key", value: apiKey)) }
+        comps.queryItems = query.isEmpty ? nil : query
+        return comps.url!
+    }
 }

@@ -1,6 +1,64 @@
 import SwiftUI
 import WebRTC
 
+
+
+
+import SwiftUI
+import WebRTC
+import UIKit
+
+/// SwiftUI wrapper around WebRTC's Metal video view.
+/// Calls `onCreate(view)` exactly once with the created view so you can attach it in your ViewModel.
+struct RTCVideoView: UIViewRepresentable {
+    typealias UIViewType = RTCMTLVideoView
+
+    /// Called once when the underlying RTCMTLVideoView is created.
+    var onCreate: (RTCMTLVideoView) -> Void
+
+    /// Optional configuration
+    var contentMode: UIView.ContentMode = .scaleAspectFit
+    var mirror: Bool = false
+    var enableCornerRadius: CGFloat = 0
+
+    func makeUIView(context: Context) -> RTCMTLVideoView {
+        let v = RTCMTLVideoView()
+        v.videoContentMode = .scaleAspectFit   // independent of UIKit contentMode
+        v.contentMode = contentMode
+       
+        // Flips the image horizontally
+        v.transform = mirror ? CGAffineTransform(scaleX: -1, y: 1) : .identity
+        
+        v.clipsToBounds = true
+        if enableCornerRadius > 0 {
+            v.layer.cornerRadius = enableCornerRadius
+        }
+
+        // Ensure we only call onCreate once
+        if !context.coordinator.didCallOnCreate {
+            context.coordinator.didCallOnCreate = true
+            onCreate(v)
+        }
+        return v
+    }
+
+    func updateUIView(_ uiView: RTCMTLVideoView, context: Context) {
+        // No-op; the VM drives track attachment/detachment.
+        // If you want to toggle mirroring dynamically, you can pass it in and set uiView.mirror here.
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    final class Coordinator {
+        var didCallOnCreate = false
+    }
+}
+
+
+
+
 struct RoomsScreen: View {
     @StateObject private var vm = RoomsViewModel()
 
@@ -12,20 +70,31 @@ struct RoomsScreen: View {
                 GroupBox(label: Text("Controls")) {
                     HStack {
                         Button("Connect WS") { vm.connectWS() }
-                            .buttonStyle(.borderedProminent)
+                            .padding()
+                            .background(Color.accentColor)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
                             .disabled(vm.isWSOpen)
 
                         Button("Hang Up") { vm.hangupAll() }
-                            .buttonStyle(.bordered)
-                            .tint(.red)
+                            .padding(8)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
                             .disabled(!vm.isWSOpen)
 
                         Button("Start/Update Call") { vm.startOrUpdateCall() }
-                            .buttonStyle(.bordered)
+                            .padding(8)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
                             .disabled(!(vm.isWSOpen && vm.hasRemotePeer))
 
                         Button(vm.cameraOn ? "Stop Camera" : "Start Camera") { vm.toggleCamera() }
-                            .buttonStyle(.bordered)
+                            .padding(8)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
                             .disabled(!vm.isWSOpen)
                     }
                 }
