@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "npm": "^10.5.2",
-    "ws": "^7.4.6"
+    "ws": "^8.2.0"
   }
 }
