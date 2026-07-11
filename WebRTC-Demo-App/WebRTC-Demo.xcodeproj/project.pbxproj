@@ -465,7 +465,7 @@
 			repositoryURL = "https://github.com/stasel/WebRTC";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 146.0.0;
+				minimumVersion = 150.0.0;
 			};
 		};
 		2F2E228628E81A080026A8B5 /* XCRemoteSwiftPackageReference "Starscream" */ = {
