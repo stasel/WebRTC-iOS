@@ -8,11 +8,11 @@ This demo app's purpose is to demonstrate the bare minimum required to establish
  
 
 ## Requirements
-1. Xcode 12.1 or later
-2. iOS 12 or later
+1. Xcode 26 or later
+2. iOS 15 or later
 3. Node.js + npm (For NodeJS Signaling server)  
 **- OR -**  
-macOS 10.15 (For Swift signaling server)
+macOS 12 (For Swift signaling server)
 
 Legacy xcode support:
 
@@ -33,8 +33,6 @@ Legacy xcode support:
 
 
 ## Starting Swift signaling server
-Note: This step requires MacOS 10.15
-
     1. Navigate to the `signaling/Swift` folder.
     2. Run `make`
     3. Run `./server` to start the server
